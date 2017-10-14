@@ -1,0 +1,345 @@
+Singleton Class in Java:
+
+public class Singleton {
+	private static Singleton singletonInstance = null;
+	
+	public String str;
+	
+	private Singleton(){
+		str = "Default Value";
+	}
+	
+	// public static Singleton Singleton() -- Instead of getInstance() we can name it same as class name.
+	public static Singleton getInstance(){
+		if(null == singletonInstance){
+			singletonInstance = new Singleton();
+		}
+		return singletonInstance;
+	}
+}
+
+class MainClass{
+	public static void main(String args[]){
+		Singleton instanceOne = Singleton.getInstance();
+		Singleton instanceTwo = Singleton.getInstance();
+		SOP(instanceOne.str); -- Default Value
+		SOP(instanceTwo.str); -- Default Value
+		instanceOne.str = "Updated Value";
+		SOP(instanceOne.str); -- Updated Value
+		SOP(instanceTwo.str); -- Updated Value
+	}
+}
+--------------------------------------------------------------------------------------------------------------------------------
+
+Immutable Class in Java:
+
+* Don't provide setter methods for all mutable fields.
+* Make all fields final and private
+* Mark class as final so that class should not be subclassed.
+* Special attention towards mutable instance variables. For mutable objects return new Objects with copied content.
+
+public final class ImmutableClass {
+	
+	private final String immutableField1;
+	private final Integer immutableField2;
+	private final Date mutableField;
+
+	private ImmutableClass(String immutableField1, Integer immutableField2, Date mutableField){
+		this.immutableField1 = immutableField1;
+		this.immutableField2 = immutableField2;
+		this.mutableField = mutableField;
+	}
+	
+	public ImmutableClass getInstance(String immutableField1, Integer immutableField2, Date mutableField){
+		return new ImmutableClass(immutableField1, immutableField2, mutableField)
+	}
+	
+	// no setter Methods
+	
+	public String getImmutableField1(){
+		return immutableField1;
+	}
+	
+	
+	public String getImmutableField2(){
+		return immutableField2;
+	}
+	
+	// Return a copy of the mutable fields
+	public Date getMutableField(){
+		return new Date(mutableField.geTime());
+	}
+}
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Equals and HashCode Implementation :
+
+public class A{
+	private int i;
+	private Integer j
+	private String s;
+	private CustomObject obj;
+	
+	@override
+	public int hashCode(){
+		int hash = 31;
+		hash = 31 * hash + getI();
+		hash = 31 * hash + (getJ() != null ? getJ().hashCode() : 0);
+		hash = 31 * hash + (getS() != null ? getJ().hashCode() : 0);
+		hash = 31 * hash + (getObj() != null ? getObj().hashCode() : 0);
+		return hash;
+	}
+	
+	@override
+	public boolean equals(Object o){
+		if(this == o) return true;
+		if(o == null || this.getClass() != o.getClass()) return false;
+		
+		A that = (A) o;
+		
+		if(this.getI() != that.getI()) return false;
+		if(this.getJ() != null ? !this.getJ().equals(that.getJ()) : that.getJ() != null ) return false;
+		if(this.getS() != null ? !this.getS().equals(that.getS()) : that.getS() != null ) return false;
+		if(this.getObj() != null ? !this.getObj().equals(that.getObj()) : that.getObj() != null) return false;
+		return true;		
+	}
+}
+
+Equals and hashcode contract : 
+
+* If two objects are same by equals() then there hashcode should be same.
+* If two objects are not same by equals() then there hashcode could be same or different.
+
+instead of instanceOf() we will use the getClass() on the object. We would avoid using instanceOf() because it will return true for subclasses as well. instanceOf() check is fine if our class in immutable because we can not create subclasses for immutable objects.
+
+In equals method we start with numeric attributes to compare because comparing numeric attribute is fast as compared to others.
+
+Mistakes while overriding equals() in java : 
+
+* Sometimes people overloads equals() by using public boolean equals(A a) instead of public boolean equals(Object o). Compiler will not complain and will execute correctly because of static binding. SO it would be good practice to use @override annotation everytime so that if any thing is wrong compiler will complain about it.
+
+* Not doing null checks for member variables.
+
+* Not overriding hashcode() and only overriding equals(). If we don't override both equals() and hashCode() then out object will not be able to use as key in hashmap.
+
+Points to Remember :
+
+* String, Flot and other wrapper classes override equals() but StringBuffer does not override it.
+
+* Don't use instanceOf check.
+
+* Two objects which is logically equal but loaded from different class loader can not be equal because getClass() check will return false in this scenario.
+
+Difference between equals() and == operator :
+
+* Since java does not support operator overloading so == operation on every object is identical where as euq
+() is a method so it can be overridden in java and logic to compare objects can be changed.
+
+* == is used for both primitive and objects where as equal() is only used for objects comparison.
+
+* Default equals() in Object class works same as == operator. 
+
+* Use == operator to comapare primitives while use equals() to compare objects in java.
+
+* == will return true if two reference are of same object. Result of equals() will depend on overridden implementation.
+
+* For comparing String use equals() instead of ==.
+ 
+--------------------------------------------------------------------------------------------------------------------------------
+Multiple Inheritance in java :
+
+* Because of diamond problem Multiple Inheritance is not supported in java.
+
+* It is not just because of technical difficulty but cleaner design was driving factor for this. Multiple Inheritance does complicate the design and creates problem durign casting and constructor chaining.
+
+--------------------------------------------------------------------------------------------------------------------------------
+Autoboxing and UnBoxing :
+
+* Autoboxing and Unboxing is introduced in Java 1.5 to convert the primitive in to boxed Object types.
+
+* primitive (int) -> Wrapper (Integer) -> Autoboxing
+  Wrapper (Integer) -> primitive (int) -> Unboxing
+
+* Autoboxing and UnBoxing happens mainly at two places.
+	* During Assignment :
+		Integer i = Integer.valueOf(3);
+		int j = i.intValue();
+		
+		Integer i = 3; -> Autoboxing
+		int j = i -> UnBoxing
+	
+	* Method Invocation : 
+		public Integer show(Integer i){
+			sop();
+		}
+		
+		int j = show(3);
+
+Problems with Autoboxing and Unboxing :
+
+* Integer sum = 0;
+  for(int i = 0; i<= 2000; i++){
+	sum = sum + i;	
+  }
+  
+  Here in backgroud this will happen.
+  
+  result = sum.intValue() + i;
+  Integer sum = new Integer(result);
+
+  Since + operator does not work on Object type so it would convert sum wrapper class object into primitive type and then find the result and then convert this result into wrapper object again. So this process will unnecessarily create 2000 objects.
+
+Autoboxing and method overloading in java:
+
+public void show(int i){
+	sop();
+}
+
+public void show(Integer i){
+	sop();
+}
+
+show(3); -> no autoboxing 
+show(new Integer(3)); -> No Autoboxing
+------------------------------------------------------------------------------------------------------------------------------------
+
+OBJECT CLASS METHODS IS JAVA:
+
+* toString() : 
+	public String toString(){
+		return getClass().getName() + "@" + Integer.toHexString(hashCode());
+	}
+	
+* hashCode() 
+* equals(Object obj) 
+* getClass() : Returns the class object of “this” object and used to get actual runtime class of the object. It can also be used to get metadata of this class. The returned Class object is the object that is locked by static synchronized methods of the represented class. As it is final so we don’t override it. 
+* finalize()
+* clone()
+* wait()
+* notify()
+* notifyAll()
+
+---------------------------------
+
+SERIALIZATION IN JAVA :
+
+When you declare a class Serializable by implementing java.io.Serializable interface then Java Runtime persist that class into disk by using default Serialization mechanism. During Serialization Java Runtime creates a version for that class this version is called SerialVersionUID. During deserialization if this SerialVersionUID does not match then process will fail with InvalidClassException.
+
+When we don't declare this SerialVersionUID as static final long value in our class then Java Serialization mechanism will generate it for us. This SerialVersionUID depends on many things like fields , their access modifiers , interfaces they implement and even the compiler implementation. Any change in class or having different compiler implementations result into different SerialVersionUID and deserialization process will ultimately fail. 
+
+* Object Serialization is the process of converting Object into Binary Stream so that it can be persisted into Disk or sent over network. Converting Binary Stream into Object is called Deserialization process.
+
+* Java provides Serialization API which includes java.io.Serializable , java.io.Externalizable, java.io.ObjectInputStream, java.io.ObjectOutputStream.
+
+How to make a Java Class Serializable : We can implement java.io.Serializable interface to make a class Serializable. In this case JVM will serialize objects in default format. 
+
+* java.io.Serializable does not have any method. It just gives compiler or JVM an indication that apply Serialization mechanism on the given class to serialize its object.
+
+* If you don't want any of your fields to be serialized then we can declare them as transient or static based on our requirement.
+
+* If In our Serializable class there exist a member object which is not serializable then NOTSERIAZABLEEXCEPTION will be thrown at run time. 
+
+* We can customize the Seri and Deserialization process in Java. We know that for serializing any object we are using ObjetOutputStream.writeObject(saveObject) and for reading any object we are using ObjectInputStream.readObject(). JVM provides us the facility to write these methods in out class so instead of calling default method JVM will call these methods and you can customize default serialization mechanism by applying any pre and post processing tasks. One thing here to remember is make these methods as private to avoid others to inherit it. JVM can call private methods of our class. 
+
+* As per Java Specification adding a new field or adding a new method comes under compatible changes. Changing the class hierarchy or unimplementing Serializable interface comes under non compatible changes.
+
+* If there is a Serializable class which were serialized earlier. Later we have added a new field to it. So what will happen in this case. -> It depends on whether It is using default SerialVersionUID or custom SerialVersionUID. If it uses default SerialVersionUID in that case after adding the new field It will change as normally It is basically the hashcode of the object. SO in that case SerialVersionUID mismatch so JVM will throw InvalidClassExcception while deserializing the object.
+
+* Which methods are used during Serialization and DeSerialization process in Java? -> java.io.ObjectOutputStream.writeObject(saveObject) is used to serialize an object into binary form. java.io.ObjectInputStream.readObject() is used to read the object from the persistent and convert it into Object. One thing to note here is that return type of readObject() is Object so we need to type cast it to relevant type.
+
+-----------------------------
+
+MARKER (TAG) INTERFACE IN JAVA:
+
+* Marker Interface in java is an interface with no fields, no methods or in simple words AN EMPTY INTERFACE IS CALLED AS MARKER INTERFACE.
+
+* Example of Marker Interfaces are Serializable, Clonnable and Remote Interfaces.
+
+* Marker Interface indicate something to Compiler to perform some special operation based on the marker interface it is implementing.
+
+* Why can't we indicate by using any flag or something in our class ? : It would be more readable to mark it as Serializable or Clonnable and also It allows to take advantage of polimorphism in java.
+
+----------------------------
+
+COMPARABLE VS COMPARATOR IN JAVA:
+
+* Comparable and Comparator in java are two interfaces which is used to implement sorting in Java. 
+
+* Comparator -> java.util package, Comparable -> java.lang package which pretty much says that Comparator would be used as a utility to sort elements whereas Comparable would be something which is provided by default.
+
+* Comparator interface has method public int compare(Object obj1, Object obj2) which will return negative value, zero or positive integer if first element is less than, equal to , or greater than the second element. 
+
+* Comparable interface has method public int compare(Object obj) which will return negative value, zero or positive integer if this element is less than , equal to or greater than the provided object.
+
+* Comparable interface in java is used to implement Natural Sorting of the elements in Collection. 
+
+* If any class implement Comparable interface then there elements will be sorted based on the natural order defined in the compareTo() of Comparable interface. It will automatically be sorted using Collections.sort() or Arrays.sort()
+
+* Objects which implements Comparable interface can be used as a key in SortedMap like TreeMap or elements in sorted set like TreeSet.
+
+public class Person implements Comparable {
+	private int personId;
+	private int salary;
+	
+	@override
+	public int compareTo(Object obj){
+		Person person = (Person) obj;
+		return this.getPersonId() - person.getPersonId();
+	}
+}
+
+public class SalaryComparator implements Comparator{
+	@override
+	public int compare(Object obj1, Object obj2){
+		Person person1 = (Person) obj1;
+		Person person2 = (Person) obj2;
+		return obj1.getSalary() - obj2.getSalary();
+	}
+}
+
+Collections.sort(list) -> sort based on compareTo()
+Collections.sort(list, comparatorObj) -> Sort based on provided comparatorObj
+ 
+---------------------------
+
+TRANSIENT KEYWORD IN JAVA:
+
+* Transient key is used in Serialization process to prevent any variable of being serialized.
+
+Which variable should be marked as Transient : 
+	-> Any field which can be calculated based on other fields those fields can be marked as transient. Like interest 
+	-> Another example is Logger instance we have with our class but we don't want to serialize it.
+	
+public class MainClass{
+	public transient Logger logger = Logger.getLogger(MainClass.class); // Will not be serialized
+	public String str;
+	public int int1;
+
+}
+
+Important Points:
+
+* Transient keyword can only be applied to fields and member variables. Apllying it to methods and local variables will be Compilation error.
+
+* You can use transient and static at the same time but the does not make sense because anyhow both means the same thing like don't serialize that variable.
+
+* In another case you can use the final and transient keywords together and compiler will not complain but we will not be able to reinitialize those variables again during deserialization.
+
+--------------------------------	
+
+-------------------------
+TRANSIENT VS VOLATILE :
+
+* Transient is used during Serialization of Java Objects where as Volatile is related to visibility of variables modifed by multiple thread during concurrent programming. 
+
+* Transient keyword in used along with instance variables to exclude them from serialization process so that those fields will not get persisted.
+
+* Volatile is also used with instance variables and it indicates the Compiler and JVM that always read its value from the main memory.
+
+* transient keyword can not be used with static keyword whereas Volatile keyword can be used with static.
+
+* transient variables are initialized with default values during deserialization.
+
+---------------------------
+

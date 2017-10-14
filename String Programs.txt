@@ -1,0 +1,289 @@
+How to Check whether any String is a number or not ?
+
+public boolean numberOrNot(String str){
+	try{
+		Integer.parseInt(str);
+	}catch(NumberFormatException ex){
+		return false;
+	}
+	return true;
+}
+
+----------------------------------------------
+
+How to reverse a String ?
+
+public static void main(String args[]){
+	String str = "ABCDEFG";
+	
+	StringBuffer sb = new StringBuffer(str);
+	System.out.println(sb.reverse());
+	//////////
+	
+	char[] charArray = str.toCharArray();
+	for(int i= charArray.length; i <=0; i++){
+		System.out.println(charArray[i]);
+	}
+	
+	///////////////
+	String revereString = recursiveMethod(str);
+	System.out.println(revereString);
+	
+}
+
+private String recursiveMethod(String str){
+	if(str == null || str.length <= 1){
+		return str;
+	}
+	
+	return recursiveMethod(str.subString(1)) + str.charAt(0);
+}
+
+---------------------------------------
+
+How to find Duplicate Elements in an Array ?
+
+public static void main(String args[]){
+	String[] strArray = {"abc", "def", "mno", "xyz", "pqr", "xyz", "def"};
+	
+	for(int i = 0; i< strArray.length -1; i ++){
+		for(int j=i+1; j< strArray.length; j++){
+			if(strArray[i].equals(strArray[j]) && i != j){
+				System.out.println(strArray[i]);
+			}
+		}
+	}
+}
+
+public static void main(String args[]){
+	String[] strArray = {"abc", "def", "mno", "xyz", "pqr", "xyz", "def"};
+	
+	Set<String> strSet = new HashSet<String>();
+	
+	for(String str : strArray){
+		if(!strSet.add()){
+			System.out.println(str);
+		}
+	}
+}
+
+---------------------------------------
+
+How to remove Whitespaces from a String ?
+
+public static void main(String args[]){
+	String str = "AB BR TYB GGda BGGiioo ";
+	
+	String strWithoutSpaces = str.replaceAll("\\s", "");
+	
+	////////////////
+	
+	char[] charArray = str.toCharArray();
+	StringBuffer sb = new StringBuffer();
+	
+	for(int i=0; i< charArray.length -1; i++){
+		if(charArray[i] != ' ' && charArray[i] != '\t'){
+			sb.append(charArray[i]);	
+		}
+	}
+}
+
+--------------------------------------
+
+How to find common elements between two arrays ?
+
+public static void main(String args[]){
+	String[] s1 = {"ONE", "TWO", "THREE", "FOUR", "FIVE", "FOUR"};
+    String[] s2 = {"THREE", "FOUR", "FIVE", "SIX", "SEVEN", "FOUR"};
+	
+	HashSet<String> set = new HashSet<String>();
+	
+	for(int i=0; i<= s1.length -1; i++){
+		for(int j=0; j<= s2.length -1; j++){
+			if(s1[i].equals(s2[j])){
+				set.add(s1[i]);
+			}
+		}
+	}
+	
+	System.out.println(set);
+}
+
+public static void main(String args[]){
+	String[] s1 = {"ONE", "TWO", "THREE", "FOUR", "FIVE", "FOUR"};
+    String[] s2 = {"THREE", "FOUR", "FIVE", "SIX", "SEVEN", "FOUR"};
+	
+	HashSet<String> set1 = new HashSet<String>(Arrays.asList(s1));
+	HashSet<String> set2 = new HashSet<String>(Arrays.asList(s2));
+	
+	set1.retainAll(set2);
+	
+	System.out.println(set1);
+}
+
+-------------------------------------
+
+How to check equality of two arrays ?
+
+public static void main(String args[]){
+	int[] arrayOne = {2, 5, 1, 7, 4};
+    int[] arrayTwo = {2, 5, 1, 7, 4};
+	
+	boolean equalOrNotEqual = true;
+	if(arrayOne.length == arrayTwo.length){
+		for(int i= 0; i< arrayOne.length ; i++){
+			if(arrayOne[i] != arrayTwo[i]){
+				equalOrNotEqual = false;
+			}
+		}
+	}else{
+		equalOrNotEqual = false;
+	}
+	
+	if (equalOrNotEqual){
+        System.out.println("Two Arrays Are Equal");
+    }
+    else{
+        System.out.println("Two Arrays Are Not equal");
+    }
+}
+
+public static void main(String args[]){
+	int[] arrayOne = {2, 5, 1, 7, 4};
+    int[] arrayTwo = {2, 5, 1, 7, 4};
+	
+	System.out.println(Arrays.equals(arrayOne, arrayTwo));
+}
+
+
+public static void main(String args[]){
+	int[] arrayOne = {2, 5, 1, 7, 4};
+    int[] arrayTwo = {5, 2, 7, 1, 4};
+
+	Arrays.sort(arrayOne);
+	Arrays.sort(arrayTwo);	
+	
+	System.out.println(Arrays.equals(arrayOne, arrayTwo));
+}
+
+public static void main(String[] args){    
+        String[][] s1 = { {"java", "swings", "j2ee" }, { "struts", "jsp", "hibernate"} };
+ 
+        String[][] s2 = { {"java", "swings", "j2ee" }, { "struts", "jsp", "hibernate"} };
+ 
+        System.out.println(Arrays.deepEquals(s1, s2));     //Output : true
+         
+        //Calling equals() method on same arrays will return false
+         
+        System.out.println(Arrays.equals(s1, s2));        //Output : false
+         
+        //That's why use deepEquals() method to compare multidimensional arrays
+    }
+}
+
+----------------------------------
+
+How to check one String is rotation of another  ?
+
+public static void main(String args[]){
+	String s1 = "JavaJ2eeStrutsHibernate";
+ 
+    String s2 = "StrutsHibernateJavaJ2ee";
+	
+	if(s1.length() != s2.length()){
+		System.out.println("Strings are not rotation of another");
+	}else{
+		String s3 = s1+ s1;
+		
+		if(s3.contains(s2)){
+			System.out.println("Strings are rotation of another");
+		}else{
+			System.out.println("Strings are not rotation of another");
+		}
+	}
+}
+----------------------------
+
+How to check given number is binary or not ?
+
+public static void main(String srgs[]){
+	int number = "10100001010";
+	boolean isBinary = true;
+	int copyNumber = number;
+	
+	while(copyNumber != 0){
+		int temp = copyNumber % 10;
+		if(temp > 1){
+			isBinary = false;
+			break;
+		}else{
+			copyNumber = copyNumber /10;
+		}
+	}
+	System.out.println("Number is binary : "  + isBinary);
+}
+
+--------------------------------
+
+How to count each character in String in java ?
+
+public static void main(String args[]){
+	String str = "ABCBDBCBABGGHSD";
+	
+	char[] charArray = str.toCharArray();
+	Map<Character, Integer> map = new HashMap<Character, Integer>();
+	
+	for(char c : charArray){
+		if(map.containsKey(c)){
+			map.put(c, map.get(c) +1);
+		}else{
+			map.put(c,1);
+		}
+	}
+	
+	System.out.println(map);
+}
+
+----------------------------
+
+How to find duplicate characters in any String ?
+
+public static void main(String args[]){
+	String str = "ABDBBVDKFHDLKKFJ";
+	
+	char[] charArray = str.toCharArray();
+	Map<Character, Integer> map = new HashMap<Character, Integer>();
+	
+	for(char c : charArray){
+		if(map.containsKey(c)){
+			map.put(c, map.get(c) +1 );
+		}else{
+			map.put(c, 1);
+		}
+	}
+	
+	Set<Character> charSet = new HashSet<Character>(map.keySet());
+	
+	for(Character c : charSet){
+		if(map.get(c) > 1){
+			System.out.println(c + " is dupliate element")
+		}
+	}
+}
+------------------------------
+
+How to find the largest number which is less than the given number and which does not contain the given digit ?
+
+public int getNumber (int number, int digit){
+	char c = Integer.toString(digit).charAt(0);
+	
+	for(int i = number; i > = 0; i--){
+		if(Integer.toString(i).indexOf(c) == -1){
+			return i;
+		}
+	}
+	return -1;
+}
+
+-----------------------------
+

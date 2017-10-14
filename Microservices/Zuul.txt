@@ -1,0 +1,79 @@
+Load Balancer
+API GATEWAY PATTERN
+
+ZUUL Service will intercepts all the requests and then route the requests to actual services.
+
+This is a very common microservice pattern and Netflix, creator of Zuul makes use of this heavily and intelligently, and Netflix claims that all Netflix traffic first go to a Zuul cluster which is mainly responsible for dynamic routing, monitoring, resiliency and security based on different groovy based custom filters.
+
+** Where Zuul fits in microservices ecosystem? 
+
+A common problem, when building microservices, is to provide a unique gateway to the client applications of your system. The fact that your services are split into small microservcies apps that shouldn’t be visible to users otherwise it may result in substantial development/maintenance efforts.To solve this problem, Netflix (a major adopter of microservices) created and open-sourced its Zuul proxy server and later Spring under Pivotal has adapted this in its spring cloud stack and enabled us to use zuul.
+
+Zuul is an edge service that proxies requests to multiple backing services. It provides a unified “front door” to your ecosystem, which allows any browser, mobile app or other user interface to consume services from multiple hosts. You can integrate Zuul with other Netflix stack components like Hystrix for fault tolerance and Eureka for service discovery or use it to manage routing rules, filters and load balancing across your system. Most importantly all of those components are well adapted by spring framework through spring boot/cloud approach.
+
+ZUUL COMPONENTS :
+
+Zuul has mainly four types of filters that enable us to intercept the traffic in different timeline of the request processing for any particular transaction. We can add any number of filters for a particular url pattern.
+
+pre filters – are invoked before the request is routed.
+post filters – are invoked after the request has been routed.
+route filters – are used to route the request.
+error filters – are invoked when an error occurs while handling the request.
+
+Zuul gateway service proxy – It would be again a spring boot based, which will basically intercept all the traffic of service and apply series of request filter and then route to the underlying service and again at the time of response serving, it will apply some response filtering. Since it is a gateway, we can literally take many interesting and useful action using the filters effectively.
+Some of the common responsibility of gateway service are –
+
+* Apply microservice authentication and security in the gateway layer to protect the actual services
+* We can do microservices insights and monitoring of all the traffic that are going in to the ecosystem by enabling some logging to get meaningful data and statistics at the edge in order to give us an accurate view of production.
+* Dynamic Routing can route requests to different backend clusters as needed.
+* We can apply static response handling i.e. building some responses directly at the edge instead of forwarding them to an internal cluster for processing.
+* We can do runtime stress testing by gradually increasing the traffic to a new cluster in order to gauge performance in many scenarios e.g. cluster has new H/W and network setup or that has new version of production code deployed.
+
+------------------------------
+
+HOW TO CREATE ZUUL PROXY SERVICE :
+
+Create a spring boot project and  add the @EnableZuulProxy annotation on Spring boot application class.
+With this annotation, this artifact will act like a Zuul service proxy and will enable all the features of a API gateway layer.
+We will then add some filters and route configurations.
+
+add below configurations in properties file:
+
+		zuul.routes.student.url = some_url (Here we are rounting all the requests coming to /student to the given url)
+
+ADD ZUUL FILTERS: 
+
+ZUUL supports four types of filters : pre, post , route and error filter
+
+* Need to extend ZuulFilter class
+* Need to override filterType(), filterOrder(), shouldFilter() and run(). Here filterType method can only return any one of four String – pre/post/route/error. Depedending on this value the filter will act like a particular filter.
+* run method is the place where our filter logic should be placed depending on our requirement.
+* Also we can add any number of any particular filter based on our need, this case filterOrder will come into place to determine the order of that filer at the phase of execution of that type of filter.
+
+		public class PreFilter extends ZuulFilter {
+		 
+		  @Override
+		  public String filterType() {
+			return "pre";
+		  }
+		 
+		  @Override
+		  public int filterOrder() {
+			return 1;
+		  }
+		 
+		  @Override
+		  public boolean shouldFilter() {
+			return true;
+		  }
+		 
+		  @Override
+		  public Object run() {
+			RequestContext ctx = RequestContext.getCurrentContext();
+			HttpServletRequest request = ctx.getRequest();
+		 
+			System.out.println("Request Method : " + request.getMethod() + " Request URL : " + request.getRequestURL().toString());
+			return null;
+		  }
+		}
+

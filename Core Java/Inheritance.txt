@@ -1,0 +1,235 @@
+POINTS TO REMEMBER ABOUT INHERITANCE :
+
+* Constructors, SIB – Static Initialization Block and IIB – Instance Initialization Block of super class will not be inheriting to its sub class. But they are executed while creating an object to sub class. 
+
+		class A
+			{
+				int i;
+			 
+				static
+				{
+					System.out.println("Class A SIB");
+				}
+			 
+				{
+					System.out.println("Class A IIB");
+				}
+			 
+				A()
+				{
+					System.out.println("Class A Constructor");
+				}
+			}
+		 
+		class B extends A
+			{
+			int j;
+			}
+	 
+		class MainClass
+		{
+			public static void main(String[] args)
+			{
+				B b = new B();
+			}
+		}
+
+* Static members of super class are inheriting to sub class as static members and non-static members are inheriting as non-static members only.
+
+*   class A
+		{
+			int i;
+		 
+			A(int i)
+			{
+				System.out.println("Class A Constructor");
+			}
+		}
+	 
+	class B extends A
+		{
+			int j;
+		}
+		
+	Here we will get a compile time error as in class B compiler will provide the default constructor and first statement of that default constructor would be super() and it will try to call the no agrgument constructor of class A and we don't have such constructor in class A. So Compiler will force us to write a constructor in class B as below.
+
+	class B extends A
+		{
+			int j;
+		 
+			public B()
+			{
+				super(10);     //Explicitly Calling Class A constructor
+				System.out.println("Class B Constructor");
+			}
+		}	
+		
+* private : Private members can not be inherited to sub class.
+
+  Default : Default members can be inherited to sub class within package.
+
+  protected : protected members can be inherited to any sub class but usage of protected member is limited within package.
+
+  public : public members are inherited to all sub classes.
+				
+					package com1;
+					 
+					public class A
+					{
+						private int i;
+						int j;
+						protected int k;
+						public int m;
+					}
+					 
+					class B extends A
+					{
+						void methodOfClassB()
+						{
+							//System.out.println(i);        Private member can not be inherited
+							System.out.println(j);           //Default member can be inherited within package
+							System.out.println(k);         //protected member can be inherited to any subclass
+							System.out.println(m);       //public member can be inherited to all sub classes
+						}
+					}
+					 
+					class C extends B
+					{
+						void methodOfClassC()
+						{
+							System.out.println(j);     //Default member can be inherited within package
+							System.out.println(k);    //protected member can be inherited to any subclass
+							System.out.println(m);    //public member can be inherited to any subclass
+					 
+							B b = new B();
+							System.out.println(b.j);   //Default member can be used within package
+							System.out.println(b.k);   //Protected member can be used anywhere in the package
+							System.out.println(b.m);  //Public member can be used anywhere
+						}
+					}
+					 
+					package com2;
+					import com1.A;
+					 
+					public class D extends A
+					{
+						void methodOfClassD()
+						{
+							//System.out.println(j);   Default members can not be inherited outside package
+							System.out.println(k);  //Protected member can be inherited to any subclass
+							System.out.println(m);  //public member is always inherited to any subclass
+					 
+							A a = new A();
+							//System.out.println(a.i);   private member not visible outside the class
+							//System.out.println(a.j);   Default members are not visible outside package
+							//System.out.println(a.k);   Protected member can not be used outside the package.
+							System.out.println(a.m);     //public member can be used anywhere
+						}
+					}
+					 
+					class E extends D
+					{
+						void methodOfClassE()
+						{
+							System.out.println(k);     //Protected member can be inherited to any subclass
+							System.out.println(m);     //public member is always inherited
+					 
+							D d = new D();
+							//System.out.println(d.k);     Protected member can not be used outside the package.
+							System.out.println(d.m);    //public member can be used anywhere
+						}
+					}
+					
+* Types of Inheritance : Single Inheritance, Multilevel Inheritance, Hierarchical Inheritance, Multiple Inheritance, Hybrid Inheritance
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question : You know that compiler will keep super() calling statement implicitly as a first statement in every constructor. What happens if we write this() as a first statement in our constructor? 
+
+Answer : Compiler will not keep super() if you are writing this() as a first statement in your constructor.
+
+---------------------------------------------------------------------
+
+** How are above problems handled for Default Methods and Interfaces ?
+
+Java 8 supports default methods where interfaces can provide default implementation of methods. And a class can implement two or more interfaces. In case both the implemented interfaces contain default methods with same method signature, the implementing class should explicitly specify which default method is to be used or it should override the default method.
+
+	// A simple Java program to demonstrate multiple
+	// inheritance through default methods.
+	interface PI1
+	{
+		// default method
+		default void show()
+		{
+			System.out.println("Default PI1");
+		}
+	}
+	 
+	interface PI2
+	{
+		// Default method
+		default void show()
+		{
+			System.out.println("Default PI2");
+		}
+	}
+	 
+	// Implementation class code
+	class TestClass implements PI1, PI2
+	{
+		// Overriding default show method
+		public void show()
+		{
+			// use super keyword to call the show
+			// method of PI1 interface
+			PI1.super.show();
+	 
+			// use super keyword to call the show
+			// method of PI2 interface
+			PI2.super.show();
+		}
+	 
+		public static void main(String args[])
+		{
+			TestClass d = new TestClass();
+			d.show();
+		}
+	}
+	
+	Output:
+
+		Default PI1
+		Default PI2
+		
+	
+If we remove implementation of default method from “TestClass”, we get compiler error. See this for a sample run.
+
+If there is a diamond through interfaces, then there is no issue if none of the middle interfaces provide implementation of root interface. If they provide implementation, then implementation can be accessed as above using super keyword.
+
+// A simple Java program to demonstrate how diamond
+// problem is handled in case of default methods
+ 
+	interface GPI
+	{
+		// default method
+		default void show()
+		{
+			System.out.println("Default GPI");
+		}
+	}
+	 
+	interface PI1 extends GPI { }
+	 
+	interface PI2 extends GPI { }
+	 
+	// Implementation class code
+	class TestClass implements PI1, PI2
+	{
+		public static void main(String args[])
+		{
+			TestClass d = new TestClass();
+			d.show();
+		}
+	}	
+	
+	Output : Default GPI

@@ -1,0 +1,28 @@
+To know the ip of the Docker Image : docker-machine ip
+
+Create one DockerFile and add below configurations in that file.
+
+	FROM openjdk:8-jdk-alpine
+	VOLUME /tmp
+	ADD target/hello-docker-0.0.1-SNAPSHOT.jar hello-docker-app.jar
+	ENV JAVA_OPTS=""
+	ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /hello-docker-app.jar" ]
+	
+This is used by Docker while creating the image. It is basically declaring the Java runtime information and target distributions.
+
+Add Maven Docker Plugins :
+
+Add two maven plugins in the pom.xml file so that we can use the Docker related maven commands while creating the instance. Those plugins are dockerfile-maven-plugin and maven-dependency-plugin.
+
+Create Docker Image
+
+Now use maven command mvn clean install dockerfile:build to create docker image.
+
+** Deploy and Run Docker Image :
+
+So we have created the Docker Image (i.e. hello-docker-0.0.1-SNAPSHOT-docker-info.jar). We also have a installed docker container running in our local machine.
+
+Now, to run the docker image inside installed docker container, we will use below command.
+
+docker run -p 8080:9080 -t hello-howtodoinjava/hello-docker  --name hello-docker-image
+Here the option -p 8080:9080 is important. It says that expose port 8080 for internal port 9080. Remember our application is running in port 9080 inside docker image and we will access that in port 8080 from outside Docker container.

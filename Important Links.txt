@@ -1,0 +1,24 @@
+Serialization and Deserilization Interview Questions : http://javabypatel.blogspot.in/2017/05/serialization-deserialization-interview-questions-java.html
+
+Collection Interview Questions:
+
+Concurrent HashMap Working and Interview Questions : http://javabypatel.blogspot.in/2016/09/concurrenthashmap-interview-questions.html
+
+Binary Search : http://javabypatel.blogspot.in/2017/09/binary-search-in-java.html
+
+http://javabypatel.blogspot.in/2017/05/can-we-override-static-methods-in-java.html
+
+http://javabypatel.blogspot.in/2016/07/type-casting-interview-questions-in-java.html
+
+http://javabypatel.blogspot.in/2016/05/exception-handling-interview-questions.html
+
+http://javabypatel.blogspot.in/2016/09/java-interface-interview-questions-in-java.html
+
+Java Serialization : 
+
+http://javabypatel.blogspot.in/2017/05/serialization-deserialization-interview-questions-java.html
+
+http://javabypatel.blogspot.in/2017/05/serialization-interview-questions-for-experienced.html
+
+------------------------------------------------------------------------------------------------
+

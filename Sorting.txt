@@ -1,0 +1,40 @@
+Bubble Sort : 
+
+1. Time complexity of Bubble sort in Worst Case is O(N^2), which makes it quite inefficient for 
+    sorting large data volumes. 
+    O(N^2) because it sorts only one item in each iteration and in each iteration it has to compare n-i  
+    elements.
+2. Time complexity of Bubble sort in Best Case is O(N). 
+    When the given data set is already sorted, in that case bubble sort can identify it in one single
+    iteration hence O(N).
+    It means while iteratng, from i=0 till arr.length, if there is no swapping required, then the array 
+    is already sorted and stop there.
+3. Bubble sort can identify when the list is sorted and can stop early.
+4. Bubble sort is efficient for (quite) small data sets. 
+5. It is Stable sort; i.e., does not change the relative order of elements with equal keys.
+6. It takes O(1) extra space.
+
+public void bubbleSort(int[] arr){
+	if(arr == null){
+		return ;
+	}
+	
+	boolean flag = true;
+	
+	for(int i = 0; i <=  arr.length -1; i++){
+		for(int j = 1; j <= arr.length-1; j++){
+			if(arr[j - 1] > arr[j]){
+				flag = false;
+				int temp = arr[j];
+				arr[j] = arr[j -1];
+				arr[j-1] = temp;
+			}
+		}
+	}
+	
+	if(flag){
+		break;
+	}
+} 
+
+----------------------------------

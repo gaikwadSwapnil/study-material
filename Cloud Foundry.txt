@@ -1,0 +1,14 @@
+cf login -a api.run.pivotal.io
+cf logout
+
+cf push app-name -p ABC.jar
+cf delete app-name 
+
+cf scale -i 5  : scale vertical
+cf scale -k 256M : scale horizontal
+
+cf apps : to see all apps deployed on the organization
+
+cf map-route Green example.com -n demo-time
+
+cf unmap-route Blue example.com -n demo-time 

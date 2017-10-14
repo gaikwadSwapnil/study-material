@@ -1,0 +1,94 @@
+Map Collection : 
+* Map is an object of key-value pair and it is a replacement for Dictionary class.
+* Map implements HashMap, Map implements LinkedHashMap, Map extends SortedMap extends NavigableMap implements TreeMap
+* Map is a part of collection framework but it does not inherit from Collection interface.
+* Map can not have duplicate key but can have duplicate values.
+* Each key-value is stored as Map.Entry objects. Map.Entry is inner interface of Map interface.
+* Order of elements in map is implementation dependent. HashMap does not maintain any order. LinkedHashMap maintains insertion order. TreeMap maintain the order based on the supplied comparator.
+* Map interface provodes three methods : keySet(), values(), entrySet()
+
+Collection vs Collections: 
+* Collection is a root level java collection interface whereas Collections is a utility class.
+* Collection interface extends Iterable Interface. Iterable interface has only one method iterator(). It returns an iterator objects, using which we can iterate over the collection elements.
+* equals() and hashcode() in Collection interface are not inherited from Object class as interfaces does not inherit Object class. Classes implementing Collection interface can provide their own implementation of equals() and hashcode() or they can use the methods inherited from Object class.
+
+Collections class: 
+* Collections is a utility class in java.util package. It consist of only static methods which are used to operate on objects of type collection.
+* Methods : Collections.max(), Collections.min(), Collections.sort(), Collections.shuffle(), Collections.synchronizedCollection(),
+Collections.binarySearch(), Collections.disjoint(), Collections.copy(), Collections.reverse()
+
+Different ways to create an ArrayList :
+* new ArrayList() -> empty arraylist with initialCapacity of 10, new ArrayList(int initialCapacity), new ArrayList(Collection c)
+
+How to increase the current capacity of an arrayList: 
+* arrayList.ensureCapacity(capacity);
+
+How to decrease the current capacity of an ArrayList to the current size: 
+* arrayList.trimToSize()
+
+How do you get the position of a particular element in an ArrayList:
+* indexOf() or lastIndexOf(). If element is not found it will return -10
+
+* ArrayList.subList() is a view of original list. It is backed by the original list and any changes made to the sublist will reflect in original sublist as well.
+
+** How to remove the duplicate elements in an ArrayList:
+	* Use HashSet -> It does not maintain insertion order.
+	* User LinkedHashSet -> It maintains insertion order.
+
+** HashMap creation :
+	* new HashMap<String, String>();
+	* new HashMap<String, String>(int intialCapacity)
+	* new HashMap<String, String>(int intialCapacity, float loadFactor);
+	* new HashMap<String, String>(Map m);
+	
+** putIfAbsent() to put a key-value pair if it does not exist in map.
+
+** map.containsKey(key) and map.containsValue(value) to check whether key or value exist in map.
+
+** Failfast and Failsafe Iterators : 
+	* Failfast Iterator throws an exception if collection is modified after creating iterator. FailSafe Iterator use original collection to traverse. It internally used flag modCount to check whether collection has been modified or not. If modCount flag has been changed after creating the iterator It throws ConcurrentModficationException.
+	* Failsafe Iterator does not throw any error if collection is modified after creating the iterator because failsafe iterator work on the copy of the collection. So any changes done on the collection after creating the iterator goes unnoticed by the iterator. One more drawback of this is that there is an extra overhead of creating the copy of the collection. ConcurrentHashMap Iterator is failsafe iterator.
+	 
+** Hashset and HashMap :
+	* HashSet can allow only one null value.
+	* HashSet and HashMap does not maintain any insertion order.
+	* Both uses hashCode() and equals() to maintain the uniqueness of the elements.
+	* iterator returned by them is fail fast in nature.
+	* HashMap and HashSet both are not synchronized.
+
+** Enumeration and Iterator : 
+	* Using Enumeration you can only traverse the collection but using iterator you can also remove an element in the collection.
+	* Iterator has remove() whereas Enumeration does not have such method. 
+	* Iterator methods : hasNext(), next(), remove() 
+	* Enumeration methods : hasMoreElements(), nextElement()
+	* Iterator is fail fast in nature whereas Enumeration is failsafe in nature.
+	
+** HashMap :
+	* In Java 8 LinkedList is replaced with Tree to move its complexility from O(n) to O(Log n).
+	* If we are using immutable final objects as key then that will reduce the hashmap collision. Immutablilty also allows caching that makes retrival process very fast.
+	* Race condition in hashmap - If two thread find at the same time that HashMap needs resizing then It will be a race condition. 
+	* We can use any custom object as key but it should follow the hashcode and equals() contract. If the object is immutable then it has already been taken care by immutability as the hashcode will not change after the object creation.
+
+** Hashtable vs ConcurrentHashMap vs SynchronizedHashMap :
+	* All methods in Hashtable are synchronized so it will make the performance very low if number of threads will increase.
+	* By default ConcurrentHashMap allows 16 threads to allow read / write on hashmap. ConcurrentHashMap divides the map into segments and applies lock on those segments only. 16 threads can operate on hashmap given they all work on different segments.
+	* One caveat which ConcurrentHashMap have like put(), get(), putAll() methods are not synchronized so concurrent retrival may not reflect most recent changes.
+
+** COncurrentHashMap: 
+	* putIfAbsent() is special method in ConcurrentHashMap.
+	* ConcurrentHashMap is best to use when you have more readers and less writers. If writers outnumbers readers then its performance would be same like hashmap or hashtable.
+	* ConcurrentHashMap is good for caching purpose, where concurrent hashmap will be initialized during server startup and later multiple readers will acess those information.
+
+** HashMap vs LinkedHashMap vs TreeMap :
+	* HashMap O(1) for insertion and reterival. Maintains no order. One null key and multiple null values. Implemented by Array of LinkedList.
+	* LinkedHashMap O(1) for insertion and reterival. Implemented by doubly linked bucket. One null key and multiple null values. Maintains insertion order.
+	* TreeMap offers O(log n) for insertion and reterival. Keys are ordered, So if you want to traverse the keys in sorted order then we can, this also means that keys must implement the Comparable interface. Red Black Tree. It can not have null keys but can have multiple null values. Maintains some sorting. 
+	
+	TreeMap : * Suppose you are creating a name to Person Object mapping. Then you want to output the values in alphabetical order. Tree map will help us in this case. * Given a name and output the next ten Persons.
+	
+	LinkedHashMap : This might  be useful in caching mechanism.
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+	

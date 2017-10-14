@@ -1,0 +1,18 @@
+											Spring Tutorial :
+
+Annotation Based Configuration :
+	
+* How to turn on Annotation based configuration : <context:annotation-config/>
+	
+* @Required : This annotation applies on the setter methods of the bean property. It mandates that property must be populated at the time of dependency resolution. 
+
+* @Autowired: 
+		- setter method - byType
+		- constructor - 
+		- on property - can be added on public and private properties. Spring uses Reflection API to inject the dependencies when added on the properties, that is the reason private properties can also be annotated. 
+  It has one attribute required whose default value is true.
+
+* @Qualifier - @Qualifier annotation is used to select the bean if there are multiple beans are candidate for byType autowire.  We can give the name of the bean and Spring Context will load the same bean.
+
+* 
+	

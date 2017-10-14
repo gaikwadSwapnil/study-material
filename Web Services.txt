@@ -1,0 +1,38 @@
+REST :
+
+If you want to 
+
+/messages/10 - GET     /getMessages.do?id=10  -- Read only method
+/messages - POST		/postMessages.do -> Becauase we dont have id yet.  -- Write Methods
+/messages/10 - PUT		/putMessages.do?id=10  -> Update or change any resource. Content needs to be sent in the Request Body -- Write Methods
+/messages/10 - DELETE	/deleteMessages.do?id=10 ->  -- Write Methods
+ 
+Idempotence in HTTP Methods:
+
+Safe for making multiple calls to the server : GET, PUT, DELETE -> Idempotent method
+
+Making multiple calls to the server will create new records everytime. So POST is non-idempotent method.
+
+So while designing our services who should keep GET , PUT and DELETE idempotent.
+
+Browser refresh resubmit the last submitted request. If we refresh the browser for GET request if would do nothing and just post the request. If we refresh the page for POST request then browser will warn us and show us a dialogue box.
+
+
+HTTP OPTIONS method is used by the client to find what are the HTTP methods and other options supported by the browser.
+
+------------------------------
+
+DIFFERENCE BETWEEN SOAP AND REST :
+
+* Rest supports Json and Xml. Soap only supports xml.
+
+* REST works only over HTTP(S) on a transport layer; SOAP can be used different protocols on a transport layer;
+
+* Soap invokes services by calling RPC methods. Rest simply calls services via URL path.
+
+* Transfer is over HTTP mostly. Also uses SMTP, FTP, whereas REST only uses HTTP. 
+
+* Soap performance is not as good as Rest as SOAP is heavy weight. 
+
+
+

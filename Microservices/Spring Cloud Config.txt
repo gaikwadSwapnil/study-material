@@ -1,0 +1,47 @@
+Config server is where all configurable parameters of microservices are written and maintained. It is more like externalizing properties / resource file out of project codebase to an external service altogether, so that any changes to that property does not necessitate the deployment of service which is using the property. All such property changes will be reflected without redeploying the microservice.
+
+Why8u to Use Spring Cloud Config Server :
+
+The idea of config server has come from the 12-factor app manifesto related to best practice guideline of developing modern cloud native application. It suggests to keep properties / resources in the environment of the server where the values of those resources vary during run time – usually different configurations that will differ in each environment.
+
+As an example, let’s say one service is dependent on another service (invoked for certain business scenario) and if that dependent service URL got changed to some other service, and then usually we need to build and deploy our service with the updated location is required. Now if we go by 12 factor app approach and if we read those config from external service deployed as different process, then we just need to refresh that config server.
+
+So, the idea is very clear and effective. Let’s now see how we can create config server.
+
+--------------------------
+
+DEPENDENCY : org.springframework.cloud:spring-cloud-starter-config
+
+Open the Spring Application class that spring already has provided and add the EnableConfigServer annotation before the class and build the project once again. With this annotation, this artifact will act like a spring config server.
+
+Point the git repo from Config Server : 
+
+Create one file called bootstrap.properties in the src\main\resources directory of spring-config-sever project and add below lines.
+
+			#Server port
+			server.port = 8888
+			 
+			#Git repo location.
+			spring.cloud.config.server.git.uri= http://github.com/something.git
+			 
+			#Disable security of the Management endpoint
+			management.security.enabled=false
+			
+Verify Server Side Configuration : 
+
+Now open browser and check below Urls, it will return the JSON output and in propertySources section we can see all the properties we have added in the properties. This ensures that config-server is running successfully, it has recognized the git location and it is serving configuration for different environments.
+
+http://localhost:8888/config-server-client/development
+http://localhost:8888/config-server-client/production
+			
+Client Application Configuration :
+
+add below configurations in bootstrap.yml
+
+		spring.cloud.config.uri=http://localhost:8888
+		spring.profiles.active=development
+
+Add @RefreshScope on the controller where properties are added and then change any property in the properties file and later hit the POST endpoint /refresh. This will refresh the properties.
+
+
+		

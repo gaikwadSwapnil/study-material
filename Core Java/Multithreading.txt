@@ -1,0 +1,18 @@
+Ways to create a Thread:
+	* By extending Thread class
+	* By implementing Runnable Interface
+	
+----------------------------------------
+
+wait() : 
+
+Thread on which wait() method is called will go to waiting state by releasing the monitor(here monitor is nothing but object of any class).
+Note: This thread will wake up only if some other thread calls either notify or notifyAll on same monitor. 
+
+notify() : 
+
+Thread on which notify() method is called will wake up one thread who is waiting on same monitor.
+
+notifyAll() : 
+
+Thread on which notifyAll() method is called will wake up all threads who is waiting on same monitor. 

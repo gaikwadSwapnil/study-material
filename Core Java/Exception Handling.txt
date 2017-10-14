@@ -1,0 +1,331 @@
+* You can not keep other statements between try, catch and finally block. 
+
+---------------------
+
+MULTIPLE CATCH BLOCKS:
+
+* From Java 7 onwards instead of writing multiple catch blocks we can write single catch block and all the Exception are seperated by PIPE (|) character.
+
+try{
+	//statements
+}catch (NumberFormatException | NullPointerException | ArrayIndexOutOfBoundException){
+	// statements
+}
+
+* java.lang.Exception is the super class of all types of Exceptions in Java. If you are not sure which exception can be thrown by your code then in catch block we can have this exception.
+
+* The order of exceptions must be from most specific to the most general one i.e All the subclasses of Exception class  must comes first, otherwise we will be getting UNREACHABLE CODE EXCEPTION.
+
+try{
+	// statements
+}catch (Exception | NumberFormatException){ --> Here it will throw UNREACHABLE CODE EXCEPTION
+	//statements
+}
+
+-----------------------
+
+NESTED TRY, CATCH BLOCKS:
+
+* Nested try, catch blocks can be useful when different statements throw different types of exceptions.
+
+try{
+	String[] s = {"abc", "124", null};
+	for(int i=0; i<= 2; i++){
+		try{
+			int a = s[i].length();
+			try{
+				a = Integer.parseInt(s[i]);
+			}catch(NumberFormatException nfe){
+				//statements
+			}
+		}catch(NullPointerException np){
+			// statements
+		}
+	}
+}
+
+* try blocks can be nested at any level.
+
+* If exception is not handeled by its catch block then It should be handeled by its outer catch block otherwise program will terminate abruptly.
+
+---------------------
+
+RETURN VALUE FROM TRY, CATCH AND FINALLY BLOCKS:
+
+Rule 1 : If finally block returns a value then try and catch block may or may not return a value.
+Rule 2: If finally block does not return a value then try and catch block must return a value.
+
+Rule 1 Example :
+
+try{
+	// may or may not return a value
+}catch(Exception e){
+	// may or may not return a value
+}finally{
+	return 20;
+}
+
+
+Rule 1 Example :
+
+try{
+	return 10; // should return a value
+}catch(Exception e){
+	return 20 // should return a value
+}finally{
+	// may or may not return a value
+}
+
+* We should not keep any statements after finally block as those statements will be unreachable code in java and It gives compile time error.
+
+try{
+	return 10;
+}catch (Exception e){
+	return 20;
+}finally{
+	return 30;
+}
+System.out.println("UNREACHABLE STATEMENT");
+
+* finally block overrides any value returned by try and catch blocks.
+
+* finally block will always be executed even if try and catch blocks are returning the control.
+
+----------------------------------
+
+HIERARCHY OF EXCEPTIONS:
+
+* java.lang.Throwable is the root of the hierarchy. It has two subclasses : java.lang.Error and java.lang.Exception
+
+* java.lang.Error 
+	Examples : java.lang.VirtualMachineError : Most common virtual machine errors are StackOverFlowError and OutOfMemoryError
+				java.lang.AssertionError
+				java.lang.LinkageError : NoClassDefFoundError and NoSuchMethodError
+				
+	All Errors are UnChecked Exceptions i.e they occur at run time only.
+				
+  java.lang.Exception : All subclasses of Exception except RunTimeException are checked exceptions. All subclasses of RunTimeException are unchecked exceptions i.e they occur at run time only.
+	
+	Exception : SQLException, InterruptedException, IOException, ParseException, RunTimeException
+	RunTimeException : NullPointerException, NumberFormatException, ArrayIndexOutOfBoundException, ClassCastException
+	
+------------------------------
+
+How to create object of Throwable or its subclasses :
+
+* Using Catch Block: When we are adding any Class in catch block it implicitly creates an object of it and it is thrown by java runtime system.
+* Using new operator. Throwable object or object to its subclasses are implicitly created and thrown by the code itself.
+
+------------------------------
+
+THROWS KEYWORD IN JAVA:
+
+* Even constructor can throw Exception. In this case Object Creation method should be enclosed with try/catch.
+
+public class MainClass{
+	
+	int i;
+	
+	public MainClass(String s) throws NumberFormatException{
+		i = Integer.parseInt(s);
+	} 
+
+	public static void main(String args[]){
+		try{
+			MainClass obj = new MainClass("ABC")
+		}catch (NumberFormatException e){
+			// statements
+		}
+	}
+}
+
+* When a method is throwing Unchecked type of exception then we need not to mention it using throws keyword. But if method is throwing checked type of exceptions then we should mention it in throws keyword.
+
+------------------------------
+
+METHOD OVERRIDING WITH THROWS CLAUSE:
+
+* If Super Class method is not throwing any exception then its subclass method can thrown only Unchecked type of Exceptions.
+
+* If Super Class method if throwing UnChecked exceptions then Its subclass method can throw SAME EXCEPTION , ANY UNCHECKED EXCEPTION but can not throw CHECKED EXCEPTIONS.
+
+* If Super Class method is throwing Checked Exception then Its subclass method can throw same checked exception or any subclass of this checked exception or any UnChecked exception. You can not increase the scope of checked exception in subclass method.
+
+-----------------------------
+
+USER DEFINED EXCEPTION CLASSES :
+
+public class CustomizedException extends Exception{
+	
+	private String errorMessage;
+	
+	public CustomizedException(String errorMessage){
+	
+		this.errorMessage = errorMessage;
+	}
+	
+	@override
+	public String toString(){
+		return errorMessage;
+	}
+}
+
+-------------------------
+
+CHAINED EXCEPTIONS IN JAVA :
+
+* Constructors of Throwable class with supports Chained Exception :
+	-> Throwable (Throwable cause) -> where cause is the exception that causes the current exception
+	-> Throwable (String msg, Throwable cause) -> where msg is the exception message and cause is the exception that causes the current exception.
+	
+	-> ex.getCause() -> This will return the actual cause of the exception.
+	-> ex.init(Throwable cause) -> This will set the cause for the calling exception.
+	
+	public class MainClass{
+		public static void main(String[] srgs){
+		
+			try{
+				NumberFormatException ex = new NumberFormatException();
+			
+				ex.init(new NullPointerException("Error Message"));
+				throw ex;
+			}catch (Exception e){
+				System.out.println(ex);
+				System.out.println(ex.getCause());
+			}
+		}
+	}
+
+---------------------------
+
+ClassNotFoundException : This exception is a RunTimeException which occurs when you try to load a class using Class.forName() or loadClass() od findSystemClass() and that class is not present in the classpath. One example like when we try to connect to oracle or mysql database but we did not added the required jar files for the same. 
+
+If you are loading two class loader to load your classes and first class loader already loaded the class A and then another class loader tries to load the same class then it will give ClassNotFoundException.
+
+NoClassDefFoundError : This is thrown when Java Runtime System tries to load the class but class was not present. The required class file was present at complie time but was not present at run time. 
+----------------------------
+
+Question 6. Which will be output of code below?
+
+class ExceptionExample {
+ public static void main(String[] args) {
+  test();
+ }
+ private static void test(){
+  throw new Exception();
+ }
+}
+Output:  Compile Time Error : Unhandled exception type Exception
+                Exception class is checked exception and when some method throw CHECKED exception,
+                then it requires a handler for checked exception or the method itself throws the exception 
+                claiming as I am not going to handle exception and whoever calls me need to be handled. 
+
+                So test() method here doesn't provided a handler for it nor it throws Exception as  
+                indication to compiler that it is not going to handle it that is why it is compile time error.
+				
+----------------------------
+
+Question 4. Is below code valid?
+
+class ExceptionExample {
+ private static void test(){
+  try { } catch (IOException e) {}     
+ }
+}
+Output:  Compile time error: Unreachable catch block for IOException. 
+                This exception is never thrown from the try statement body
+
+It is not allowed to catch a Checked Exception which is not thrown from try block except for class Exception and Throwable which has RuntimeException as subclass for which decision is taken at run time and not compile time.
+
+Example: 
+
+class ExceptionExample {
+ private static void test(){
+  try { } catch (Exception e) {}     
+ }
+}
+Above code is perfectly valid because catch block catches Exception class and even though it is checked exception, Compiler doesn't complain because compiler is not sure that catch block is wrote to handle checked exception or unchecked(Runtime) exception as Exception class can handle both so above code is perfectly valid.
+
+Example: 
+
+class ExceptionExample {
+ private static void test(){
+  try { } catch (NullPointerException e) {}     
+ }
+}
+Above code is perfectly valid and compiler doesn't complains because when you catch Unchecked exception that is either RuntimeException or Error or any subclass of it then compiler doesn't check what is written in try block because this Exception/Error can occur at run time, so for compilation it is perfectly valid call.
+
+------------------------------
+
+Question 7. Which will be output of code below?
+
+class ExceptionExample {
+ public static void main(String[] args) {
+  test();
+ }
+ private static void test() throws NullPointerException{
+  throw new NullPointerException();
+ }
+}
+Output:  Program will compile properly and it will throw NullPointerException at Runtime. 
+                test() method throws NullPointerException which is Unchecked exception, 
+                So it is not mandatory for caller to catch it, If it catches still it is fine, that is why compiler 
+                doesn't complain for catch block. 
+				
+---------------------------------
+
+Question 8. Which will be output of code below? Do you think compiler will complain as "The type ExceptionExample must implement the inherited abstract method InterfaceTest.test()"? 
+
+interface InterfaceTest{ 
+ public void test() throws Exception; 
+}
+ 
+class ExceptionExample implements InterfaceTest{ 
+ public void test() throws Exception, IOException, RuntimeException, Error {
+ }
+  
+ public static void main(String[] args) {
+ }
+}
+Output:  Program will compile properly and no output. 
+                In InterfaceTest, one method is declared name test() which throws Exception. 
+                So for the class which implements InterfaceTest need to define method test() which either 
+                throws Exception class or any number of subclass of Exception and is perfectly valid 
+                inherited test() method. 
+				
+-------------------------
+
+Question 9. What is the output of Program below? 
+
+class ExceptionExample{ 
+ 
+ public static final void main(String[] args) {
+  System.out.println(test());
+ }
+ 
+ private static String test() {
+  try {
+   String str = null;
+   return str.toString();
+   
+  }finally {
+   return "hello finally";
+  }
+ } 
+}
+Output:  hello finally (and no exception is thrown)
+                How come NullPointerException is not thrown? So as we see in previous example, 
+                finally block if present will always be a deciding block for return value of method if return 
+                statement is present in finally block irrespective of return present in try and catch block.
+
+                In try block NullPointerException is thrown but and as it is Unchecked exception compiler 
+                didn't complain for handling it and it is generated at run time. 
+
+                After executing try block NullPointerException is generated but that is not the output of 
+                the program as finally block was present in method which is returning "hello finally", 
+                So control went to finally block and it encountered return statement there, which is final 
+                return of method and exception which JVM planned to return after final block execution
+                get lost.
+				
+-------------------------
+

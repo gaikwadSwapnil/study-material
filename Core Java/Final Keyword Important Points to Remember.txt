@@ -1,0 +1,62 @@
+* final class in java :
+
+We can’t create a subclass to the class or we can’t extend a class or we can’t modify a class which is declared as final.
+
+* final method in java :
+
+We can’t override a method or we can’t modify a method in the sub class which is declared as final in the super class.
+
+* final variable in java :
+
+The value of a final variable can not be changed in the whole execution once it got initialized.
+
+	class AnyClass
+	{
+		final int i = 10;
+	 
+		void methodOne()
+		{
+			i = 20;     //compile time error
+			//final field can not be re-assigned
+		}
+	}
+
+* Any class or any method can be either abstract or final but not both. abstract and final are totally opposite. Because, abstract class or abstract method must be implemented or modified in the sub classes but final does not allow this. This creates an ambiguity.
+
+* final method can be overloaded and that overloaded method can be overridden in the sub class.
+	
+* final variable can not be re-initialized but final variable can be used to initialize other variables.
+
+* When an array reference variable is declared as final, only variable itself is final but not the array elements.
+
+* When a reference variable is declared as final, you can’t re-assign a new object to it once it is referring to an object. But, you can change the state of an object to which final reference variable is referring.
+
+* Static variables, non-static variables and local variables all can be final. once the final variables are initialized, even you can’t re-assign the same value.
+
+*  If the global variables are not initialized explicitly, they get default value at the time of object creation. But final global variables don’t get default value and they must be explicitly initialized at the time of object creation. Uninitialized final field is called Blank Final Field.
+
+	class A
+	{
+		int i;   //Non-final global variable, no need to initialize them
+	 
+		final int j;         //Blank Final Field
+	 
+		A()
+		{
+			j=20;    
+	 
+			//final global variable must get a value at the time of object creation.
+		}
+	}
+	 
+	public class UseOfFinalKeyword
+	{
+		public static void main(String[] args)
+		{
+			A a = new A();
+		}
+	}
+
+* final non-static global variable must be initialized at the time of declaration or in all constructors or in any one of IIBs – Instance Initialization Blocks.
+
+* final static global variable must be initialized at the time of declaration or in any one of SIBs – Static Initialization Blocks. (final static global variable can’t be initialized in constructors)

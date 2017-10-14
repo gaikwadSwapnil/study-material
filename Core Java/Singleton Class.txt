@@ -1,0 +1,864 @@
+   Singleton is a software design pattern to limit the instantiation of a class to one, which will be globally accessible.  That means it’s a technique by which a class only have one instance/object and this object can be accessed globally. It is a part of Gang of Four design pattern and it comes under creational design patterns.
+
+   Applications, often needs to create single instance of a class, and that instance will be used throughout the application. Examples like logging, database access, etc. We could pass such an instance from method to method, or we can also assign it to each object in the application. But, that will create lots of complexity. On the other hand, we could use a single instance to communicate with a class. Hence, the class could create and manage a single instance of its own. And when needed, just talk to that class.
+
+
+Principles of Singleton
+Therefore, the principles of Singleton design pattern are -
+1. The implementing class should have only one instance.
+2. Access point of this single instance should be global.
+
+Example of Singleton class in Java: One of the most popular singleton examples is java.lang.Runtime class. It’s a singleton class, you can’t initialize this class, but you can get the instance by calling getRuntime() method.
+
+
+
+Structure
+So, what will be the structure of a singleton class?
+
+
+Singleton - structure
+Well, it should contain the following properties:
+
+1. It should have a private static member of the class.
+
+2. The constructor should be private, so that, no one from outside can initialize this class.
+
+3. A public static method which will expose the private member of the class to the outer world.
+
+
+
+
+
+What if we use static class instead of Singleton?
+Now, question may come, what if we use a static class instead of a Singleton class?
+
+   Well, there are some advantages of using Singleton over static class.
+1. Static class can only have static members, where in Singleton pattern implemented class can have non-static members.
+2. A Singleton class can implement interfaces as well as extend classes but a static class can extend classes, without inheriting their instance members. 
+3. A static class can’t be a top level class. It should be always nested class. That means, under some non-static class. Because, by definition static means that it belongs to a class it is in.
+4. We can clone an object of a Singleton class, but in static class, that is not possible.
+5. Again, Singleton supports the features like polymorphism while, for a static class it’s not possible.
+6. Singleton classes can also supports the lazy loading facility, which is not supported in a static class.
+
+
+
+
+Implementation Styles
+
+
+   In Java programming language, Singleton pattern can be archive by different implementation style. Each has some pros and corns. One single style is not suitable for every situation. So I think you should know, all of them, and use it as per your requirement.   
+
+   Now, we are going to discuss about some of the most popular implementation style.
+
+
+7 most popular implementation style of singleton design pattern in java:
+Simple Lazy Initialization
+Thread Safe Lazy Initialization
+Double Check Locking
+Eager Initialization
+Static Block Initialization
+Demand Holder Idiom by Bill Pugh
+Using enum by Joshua Bloch
+Simple Lazy Initialization:
+   The lazy initialization singleton implementation style initializes the instance of a singleton class when it’s first being used. That means, the private static instance, (that is described in Structure) is initialized not during the class load, but during its first use. Lazy initialization is very helpful, when is object cost of a singleton class is high, i.e., it may take lots of time or memory.
+It's only loaded, when it's actually being used.
+
+
+   Simple Lazy Initialization is the most basic style for lazy loading. It's good for the newbies to understand the concept and structure of Singleton pattern.The concept of this style is to declare the private static instance of the class by setting the initial value as null during class load, keeping the actual initialization for the first call. That means, the actual initialization of the single instance of the class is only happening when for the first time the class has been called.
+
+   Let’s take a look on the below example. The class LazyInitializationThreadUnsafe is a singleton class, which contains a counter, every time called gives you a sequential incremental number.
+Example: Class LazyInitializationThreadUnsafe
+
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class LazyInitializationThreadUnsafe is Singleton Class suitable for
+ * single thread application. This class also provides a public method named
+ * counter() which will always returns integer type sequenced counter value
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class LazyInitializationThreadUnsafe {
+
+        /*
+         * The integer type counter will hold the value of the counter. The scope of
+         * this field is private, so its only accessible via the counter method.
+         * It's static so that only one copy of this variable will be available
+         * within the memory.
+         */
+        private static int counter = 0;
+
+        /*
+         * The static private member instance of type LazyInitializationThreadUnsafe
+         * Class will hold the single instance of this class.
+         */
+        private static LazyInitializationThreadUnsafe instance = null;
+
+        /*
+         * The constructor of the LazyInitializationThreadUnsafe class is in private
+         * scope so that, no one can initialize this class.
+         */
+        private LazyInitializationThreadUnsafe() {
+                System.out
+                        .println("LazyInitializationThreadUnsafe.LazyInitializationThreadUnsafe()");
+        }
+
+        /*
+         * The method getInstance() will return the only instance of the class
+         * LazyInitializationThreadUnsafe. It will initialize the object if the
+         * instance is null by accessing the private constructor of this class.
+         */
+        public static LazyInitializationThreadUnsafe getInstance() {
+
+                if (instance == null) {
+                        instance = new LazyInitializationThreadUnsafe();
+                }
+
+                return instance;
+        }
+
+        /*
+         * This sample method will increase the counter by 1 and returns its value.
+         */
+        public int counter() {
+                counter++;
+                System.out.println("LazyInitializationThreadUnsafe.counter()");
+                return counter;
+        }
+
+}
+Here, we are first declaring the class instance as null. 
+private static LazyInitializationThreadUnsafe instance = null;
+
+Now, when globally accessible getInstance() is called, 
+1. it will check if the instance is null or not.
+2. if null initialize it.
+3. return the instance.
+if (instance == null) {
+                        instance = new LazyInitializationThreadUnsafe();
+                }
+
+So, it will be initialize only for the first time the getInstance() method has been called.
+But, this style is not thread safe. Its only good for single threaded environment.
+Life cycle:
+• Initializes during first use.
+• Destroyed at application shutdown.
+Pros:
+• It supports lazy initialization, so it will only been loaded to the memory when it’s actually needed for the first time.
+Corns:
+• It’s preferable only on single thread environment.
+
+-------------------------------------------------
+Thread Safe Lazy Initialization:
+   The concept of this style is same as other lazy initialization style; the only difference with the previous lazy initialization style is its thread safe.
+
+   Let’s take a look on an example. The below class LazyInitializationThreadSafe is a thread safe lazy initialization style.
+Example: Class LazyInitializationThreadSafe 
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class LazyInitializationThreadSafe is Singleton Class suitable for
+ * multithreaded application.
+ * This class also provides a public method named counter()
+ * which will always returns integer type sequenced counter value
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class LazyInitializationThreadSafe {
+
+        /*
+         * The integer type counter will hold the
+         * value of the counter.
+         * The scope of this field is private, so its
+         * only accessible via the counter method.
+         * It's static so that only one copy of this variable
+         * will be available within the memory.
+         */
+        Private static int counter = 0;
+       
+        /*
+         * The static private member instance of type LazyInitializationThreadSafe
+         * Class will hold the single instance of this class.
+         *
+         */
+        private static LazyInitializationThreadSafe instance = null;
+
+        /*
+         * The constructor of the LazyInitializationThreadSafe class is in
+         * private scope so that, no one can initialize this class.
+         */
+        private LazyInitializationThreadSafe() {
+                System.out
+                                .println("LazyInitializationThreadSafe.LazyInitializationThreadSafe()");
+        }
+
+        /*
+         * The static method getInstance() will return the only instance
+         * of the  class LazyInitializationThreadSafe.
+         * It will initialize the object if the
+         * instance is null by accessing the private constructor
+         * of this class.
+         * The method getInstance() is synchronized to make it thread safe.
+         */
+        public static synchronized LazyInitializationThreadSafe getInstance() {
+
+                if (instance == null) {
+                        instance = new LazyInitializationThreadSafe();
+                }
+
+                return instance;
+        }
+
+        /*
+         * This sample method will increase the counter
+         * by 1 and returns its value.
+         */
+        public int counter() {
+                counter++;
+                System.out.println("LazyInitializationThreadSafe.counter()");
+                return counter;
+        }
+
+}
+Now, in this class you will find only one difference from the previous example (Class LazyInitializationThreadUnsafe), that is, I use the synchronized Now, in this class getInstance() method. That means, concurrent threads will use this method in atomic way. Thus, it’s safe from concurrent usage of this method by multiple threads. And it becomes thread safe.
+Life cycle:
+• Initializes during first use.
+• Destroyed at application shutdown.
+Pros:
+• Thread safe
+• It uses lazy loading so it’s been initialized during its actual usage.
+Corns:
+• A bit slower that not thread safe style, the getInstance() goes through synchronized method. So it’s locking the resource every time you call it.
+
+----------------------------------------------
+
+Double Check Locking:
+   Another technique to implement thread safe lazy initialization is double check locking. This concept will work fine in Java 5 or above.  This concept is introduced to optimize the thread safe lazy initialization style of the Singleton pattern, which locks the resources, every time you try to get the instance of the class using a public scoped method.
+
+   Let’s see in details by the example class DoubleCheckLock.
+Example: Class DoubleCheckLock 
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class DoubleCheckLock is Singleton Class which implements the double
+ * check lock style. This class also provides a public method named counter()
+ * which will always returns integer type sequenced counter value
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class DoubleCheckLock {
+
+        /*
+         * The static private member instance of type DoubleCheckLock Class will
+         * hold the single instance of this class.
+         */
+        private static volatile DoubleCheckLock instance = null;
+
+        /*
+         * The integer type counter will hold the value of the counter. The scope of
+         * this field is private, so its only accessible via the counter method.
+         * It's static so that only one copy of this variable will be available
+         * within the memory.
+         */
+        private static int counter = 0;
+
+        /*
+         * The constructor of the DoubleCheckLock class is in private
+         * scope so that, no one can initialize this class.
+         */
+        private DoubleCheckLock() {
+                System.out.println("DoubleCheckLock.DoubleCheckLock()");
+        }
+
+        /*
+         * The method getInstance() will return the only instance of the class
+         * DoubleCheckLock. It will initialize the object if the instance is null by
+         * accessing the private constructor of this class.
+         */
+        public static DoubleCheckLock getInstance() {
+                if (instance == null) {
+                        synchronized (DoubleCheckLock.class) {
+                                if (instance == null) {
+                                        instance = new DoubleCheckLock();
+                                }
+                        }
+                }
+                return instance;
+        }
+
+        /*
+         * This sample method will increase the counter by 1 and returns its value.
+         */
+        public int counter() {
+                counter++;
+                System.out.println("DoubleCheckLock.counter()");
+                returncounter;
+        }
+
+}
+Now, over here if you see, you will find the difference is in technique of initializing the instance inside getInstance() method.
+if (instance == null) {
+                        synchronized (DoubleCheckLock.class) {
+                                if (instance == null) {
+                                        instance = new DoubleCheckLock();
+                                }
+                        }
+                }
+ Here, what we are doing is, 
+1. Checking if the instance has been initialized or not.
+2. If not, creating locks by using synchronized.
+3. Again checking if the instance is already initialized or not.
+4. If still not, then initializing the instance of the class.
+
+   This is been introduced as in previous example (class LazyInitializationThreadSafe), we always locking the method getInstance(), every time it’s been called. While, it’s only need when its initializing the instance.
+You can also see that, we use the volatile keyword, when declaring the instance of the class. That’s, to inform the JVM that writes to the field should always be synchronously flushed to memory, and that reads of the field should always read from memory.
+Life cycle: 
+• Initializes during first use.
+• Destroyed at application shutdown.
+Pros:
+• Thread safe style.
+• Doing lazy loading.
+• Performance wise it’s faster than Thread safe lazy initialization as its only locking during initialization.
+Corns:
+• Code complexity.
+• Should only use in java 5 or above.
+
+
+--------------------------------
+Early or Eager Initialization
+
+   Early or eager initialization style is to initialize the instance of a singleton class during class loading. This style is very effective, if the instance is not that costly. In this technique, the instance of the class has been initialized during its declaration and marked with final keyword, so that it can’t be modified. One more benefit of using this style is, it’s totally thread safe.
+
+   Let us see by using an example singleton class EagerInitialization.
+Example: Class EagerInitialization 
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class EagerInitialization is Singleton Class which implements
+ * the Eager Initialization style suitable for both single
+ * threaded  or multithreaded application.
+ * This class also provides a public method named counter()
+ * which will always returns integer type sequenced counter value
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class EagerInitialization {
+
+        /*
+         * The integer type counter will hold the
+         * value of the counter.
+         * The scope of this field is private, so its
+         * only accessible via the counter method.
+         * It's static so that only one copy of this variable
+         * will be available within the memory.
+         */
+        private static int counter = 0;
+       
+        /*
+         * The static private member instance of type EagerInitialization
+         * Class will hold the single instance of this class.
+         *
+         */
+        private static final EagerInitialization INSTANCE = new EagerInitialization();
+
+        /*
+         * The constructor of the EagerInitialization class is in
+         * private scope so that, no one can initialize this class.
+         */
+        private EagerInitialization() {
+                System.out.println("EagerInitialization.EagerInitialization()");
+        }
+
+        /*
+         * The static method getInstance() will return the only instance
+         * of the  class EagerInitialization.
+         */
+        public static EagerInitialization getInstance() {
+                return INSTANCE;
+        }
+
+        /*
+         * This sample method will increase the counter
+         * by 1 and returns its value.
+         */
+        public int counter() {
+                counter++;
+                System.out.println("EagerInitialization.counter()");
+                return counter;
+        }
+
+}
+In this example, you can see its simply initializing the instance during declaration under private static final clause. And returns it via a public static method getInstance().
+
+
+Life cycle:
+• Initializes during class load.
+• Destroyed at application shutdown.
+
+
+Pros:
+• Thread safe.
+• Performance wise, faster than lazy initialization, as it’s not locking any resource by synchronized.
+• The instance is final, so scope of redefining, thus, no scope of multiple instance. 
+
+
+Corns:
+• Initializes during class load, so it is occupying memory, even when it’s not required. 
+
+--------------------------------------
+
+Static block initialization
+   Static block initializing is another style of early initialization. The only difference is you are initializing the instance of the class under a static block with error checking.
+
+   Now, try it with this example class StaticBlockInitialization.
+Example: Class StaticBlockInitialization 
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class StaticBlockInitialization is Singleton Class which implements the
+ * Static Block Initialization style. This class also provides a public method
+ * named counter() which will always returns integer type sequenced counter
+ * value
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class StaticBlockInitialization {
+
+        /*
+         * The integer type counter will hold the value of the counter. The scope of
+         * this field is private, so its only accessible via the counter method.
+         * It's static so that only one copy of this variable will be available
+         * within the memory.
+         */
+        private static int counter;
+
+        /*
+         * The static private member instance of type StaticBlockInitialization
+         * Class will hold the single instance of this class.
+         */
+        private static final StaticBlockInitialization INSTANCE;
+
+        /*
+         * Initializing static members under static block
+         */
+        static {
+                try {
+                        INSTANCE = new StaticBlockInitialization();
+                        counter = 0;
+                } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                }
+        }
+
+        /*
+         * The constructor of the StaticBlockInitialization class is in private
+         * scope so that, no one can initialize this class.
+         */
+        private StaticBlockInitialization() {
+                System.out
+                                .println("StaticBlockInitialization.StaticBlockInitialization()");
+        }
+
+        /*
+         * The static method getInstance() will return the only instance of the
+         * classStaticBlockInitialization.
+         */
+        public static StaticBlockInitialization getInstance() {
+                return INSTANCE;
+        }
+
+        /*
+         * This sample method will increase the counter by 1 and returns its value.
+         */
+        public int counter() {
+                counter++;
+                System.out.println("StaticBlockInitialization.counter()");
+                return counter;
+        }
+
+}
+Here, you can see we are initializing the instance of the class under a static block. And we are also doing it under try catch block, to provide an error check during initialization.
+
+Life cycle:
+• Initializes during class load.
+• Destroyed at application shutdown.
+
+
+Pros:
+• Thread safe.
+• Performance wise, faster than lazy initialization, as it’s not locking any resource by synchronized.
+• The instance is final, so scope of redefining, thus, no scope of multiple instance. 
+• Initializing under try catch block for error check.
+
+
+Corns:
+• Initializes during class load, so it is occupying memory, even when it’s not required. 
+
+
+
+Demand Holder Idiom by Bill Pugh
+   Again back to lazy initialization style, but this time, back with a better way of use lazy implementation. Demon holder idiom is written by an American computer scientist Bill Pugh. The concept with this pattern is to declare and initialize the instance as private static final under a static inner class.
+
+   Let’s see with the example class DemandHolderIdiom.
+Example: Class DemandHolderIdiom 
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class DemandHolderIdiom is Singleton Class which implements the Demand
+ * Holder Idiom style. This class also provides a public method named counter()
+ * which will always returns integer type sequenced counter value.
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class DemandHolderIdiom {
+
+        /*
+         * The integer type counter will hold the value of the counter. The scope of
+         * this field is private, so its only accessible via the counter method.
+         * It's static so that only one copy of this variable will be available
+         * within the memory.
+         */
+        private static int counter = 0;
+
+        /*
+         * The constructor of the DemandHolderIdiom class is in private scope so
+         * that, no one can initialize this class.
+         */
+        private DemandHolderIdiom() {
+                System.out.println("DemandHolderIdiom.DemandHolderIdiom()");
+        }
+
+        /*
+         * The class SingletonInstanceHolder is a private class which only contains
+         * single instance of the class DemandHolderIdiom
+         */
+        private static class SingletonInstanceHolder {
+
+                /*
+                 * The static private member instance of type SingletonInstanceHolder
+                 * Class will hold the single instance of this class.
+                 */
+                public static final DemandHolderIdiom INSTANCE = new DemandHolderIdiom();
+        }
+
+        /*
+         * The static method getInstance() will return the only instance of the
+         * classDemandHolderIdiom, which is declared under SingletonInstanceHolder
+         * class.
+         */
+        public static DemandHolderIdiom getInstance() {
+                returnSingletonInstanceHolder.INSTANCE;
+        }
+
+        /*
+         * This sample method will increase the counter by 1 and returns its value.
+         */
+        publicint counter() {
+                counter++;
+                System.out.println("DemandHolderIdiom.counter()");
+                returncounter;
+        }
+
+}
+
+Over here, you can see, the instance of the singleton class has been declared and initialized under a static inner class SingletonInstanceHolder. And when getInstance() is called, it’s the return the instance under the inner class.
+
+Now, the question is, how is Domain Holder Idiom working as lazy initialization style?
+
+   The answer is, when the class DemandHolderIdiom is loaded, it goes through initialization of only the static fields. Since it doesn’t have any static variable to initialize, SingletonInstanceHolder is not loaded during class loading. So, when it will initialize? Well, it will only loaded when the JVM thinks that SingletonInstanceHolder must be executed. And that is only when this inner class has been called from the getInstance() method for the first time. Now, when this inner class is loaded, all its static variables are also loaded. So the instance is also initialized by executing the private constructor of the outer class. You can also read Java Language Specification (JLS) for more details about class loading and initialization. As the class initialization phase is guaranteed by the JLS to be serial, i.e., non-concurrent, so no further synchronization is required in the static getInstance() method during loading and initialization.
+
+Life cycle:
+• Initializes during first use.
+• Destroyed at application shutdown.
+
+Pros:
+• Thread safe.
+• Lazy loading.
+• No need of resource locking to make it thread safe. Thus, performance is also good.
+Corns:
+• No such disadvantage as far. Still, it should be used when you need the lazy loading facility. Else, early loading is simple to understand and use.
+
+
+
+Using enum by Joshua Bloch
+Another technique to create singleton is by using Enum. Well Enum is introduced in Java 5, so it’s applicable in java 5 or higher versions. A computer scientist Joshua Bloch claims that "a single-element enum type is the best way to implement a singleton" in his book Effective Java [2nd edition]. Enum is thread safe and serialization.
+Let’s see an implementation with an enum UsingEnum.
+Example: Enum UsingEnum
+package interview.question.java.singleton;
+
+/**
+ *
+ * The enumUsingEnum is defined to behave as Singleton . It also provides a
+ * public method named counter() which will always returns integer type
+ * sequenced counter value.
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public enum UsingEnum {
+
+       Instance;
+       /*
+        * The integer type counter will hold the value of the counter. The scope of
+        * this field is private, so its only accessible via the counter method.
+        * It's static so that only one copy of this variable will be available
+        * within the memory.
+        */
+       private static int counter = 0;
+
+       /*
+        * This sample method will increase the counter by 1 and returns its value.
+        */
+       public int counter() {
+              counter++;
+              System.out.println("UsingEnum.counter()");
+              return counter;
+       }
+
+}
+Here, you can see the code is very simple.
+public enum UsingEnum {
+
+       Instance;
+}
+By this only your singleton is created. So, don’t even need any locking for thread safety. Enum also supports serialization. But it is unable to extend any class [read more for details].
+Life cycle:
+• Initializes during first use.
+• Destroyed at application shutdown.
+
+
+Pros:
+• Thread safe.
+• Supports serialization.
+• No locking is needed, so performance is better.
+• Code simplicity.
+Corns:
+• Available from java 5
+• Unable to extend any class.
+
+Test Class to execute all Singleton Examples
+
+Now, it’s time to test the all above singleton classes. For that, we have a Test class, which simple calls all the above classes twice, to see if its initializing once or more, by using a loop.
+package interview.question.java.singleton;
+
+/**
+ *
+ * The class Test will call all the singleton classes to test.
+ *
+ * @author Java Interview Questions [http://interviewquestionjava.blogspot.com]
+ *
+ **/
+public class Test {
+
+        public static void main(String[] args) {
+
+                for (int i = 0; i< 2; i++) {
+
+                        //LasyInitializationThreadUnsafe
+                        LasyInitializationThreadUnsafelasyInitializationSingleThread = LasyInitializationThreadUnsafe
+                                        .getInstance();
+                        System.out.println(lasyInitializationSingleThread.counter());
+
+                        //LasyInitializationThreadSafe
+                        LasyInitializationThreadSafelasyInitializationThreadSafe = LasyInitializationThreadSafe
+                                        .getInstance();
+                        System.out.println(lasyInitializationThreadSafe.counter());
+                       
+                        //DoubleCheckLock
+                        DoubleCheckLockdoubleCheckLock = DoubleCheckLock.getInstance();
+                        System.out.println(doubleCheckLock.counter());
+
+                        //EagerInitialization
+                        EagerInitializationeagerInitialization = EagerInitialization
+                                        .getInstance();
+                        System.out.println(eagerInitialization.counter());
+
+                        //StaticBlockInitialization
+                        StaticBlockInitializationstaticBlockInitialization = StaticBlockInitialization
+                                        .getInstance();
+                        System.out.println(staticBlockInitialization.counter());
+
+                        //DemandHolderIdiom
+                        DemandHolderIdiomdemandHolderIdiom = DemandHolderIdiom
+                                        .getInstance();
+                        System.out.println(demandHolderIdiom.counter());
+
+                        //UsingEnum
+                        System.out.println(UsingEnum.Instance.counter());
+
+                        System.out.println("\n\n");
+
+                }
+
+        }
+
+}
+
+
+Output:
+Now, from the output it’s clear that, all the singleton classes have been initialized for one time.
+LasyInitializationThreadUnsafe.LasyInitializationThreadUnsafe()
+LasyInitializationThreadUnsafe.counter()
+1
+LasyInitializationThreadSafe.LasyInitializationThreadSafe()
+LasyInitializationThreadSafe.counter()
+1
+DoubleCheckLock.DoubleCheckLock()
+DoubleCheckLock.counter()
+1
+EagerInitialization.EagerInitialization()
+EagerInitialization.counter()
+1
+StaticBlockInitialization.StaticBlockInitialization()
+StaticBlockInitialization.counter()
+1
+DemandHolderIdiom.DemandHolderIdiom()
+DemandHolderIdiom.counter()
+1
+UsingEnum.counter()
+1
+
+
+
+LasyInitializationThreadUnsafe.counter()
+2
+LasyInitializationThreadSafe.counter()
+2
+DoubleCheckLock.counter()
+2
+EagerInitialization.counter()
+2
+StaticBlockInitialization.counter()
+2
+DemandHolderIdiom.counter()
+2
+UsingEnum.counter()
+2
+
+
+
+
+Conclusion
+
+Well, after discussing all the implementation styles, we may think the Enum Singleton Style and Domain Holder Idiom are the most smarter ways to implement Singleton pattern in java. But that doesn't mean other styles are irrelevant. Styles like Simple Lazy Initialization Style and Early Initialization are very good for learning phase.  Because you can get the concept and structure of a singleton class very clearly form these patterns. And remember java.lang.Runtime uses Early Initialization too.
+
+-------------------------------------------------------------------------------
+
+How to avoid breaking the Singleton Class :
+Overall notion of Singleton class lies in getting one and only one instance of the class. Much of our functionality relies on the base that there will be only one object of a class we intentionally designed to be Singleton. What if the same class produces more than one object in some scenario? Woaaah!!! Our code blows away.
+
+For all those who are anxious to know how this could be done to break a Singleton class or how to write Singleton class so that it is not broken, there is some interesting stuff below:
+
+1. Break by Cloning
+
+If a Singleton class implements java.lang.Cloneable interface then invoking clone() method on its single instance creates a duplicate object. Consider the below code:
+
+public class MyClass implements Cloneable{
+	private static MyClass instance = new MyClass();
+	private static MyClass getInstance(){
+		return instance;
+	}
+	public static void main(String[] args) throws CloneNotSupportedException {
+		MyClass obj = MyClass.getInstance();
+		System.out.println(obj);
+		System.out.println(obj.clone());
+	}	
+}
+This prints
+
+com.MyClass@544a5ab2
+com.MyClass@5d888759
+
+See!!! Two distinct objects. Singleton gone away.
+
+Remedy :
+
+Don’t make the class which should be Singleton implement java.lang.Cloneable. If it extends a class which implements Cloneable, then override clone method and throw CloneNotSupportedException from it. This will prevent clone creation.
+
+
+
+2. Deserialization also breaks Singleton
+Deserialization means bringing a saved object back to life. When a class is deserialized, a fresh instance of the class is created and its instance variables are then set to the values which were serialized.
+What does a fresh instance creation means if the serialized class was Singleton? Simple, More than one object. See below
+
+	MyClass ob= MyClass.getInstance();
+	System.out.println(ob);
+	//code to serialize object goes here
+	//code to deserialize saved object here
+	MyClass newObject = (MyClass)inputStream.readObject(); 
+	//inputStream is the stream connected to the medium to which the object 
+        //was serialized, e.g., a file  
+	System.out.println(newObject);
+	//re-initialize the same input stream or 
+	//use another inputstream to read the object once again
+	MyClass anotherObject = (MyClass)inputStreamNew.readObject();
+	System.out.println(anotherObject);
+The output is
+
+com.MyClass@2da679b7
+com.MyClass@6bbc4459
+
+Again, distinct objects.
+
+Remedy :
+
+Override readResolve method and return the same Singleton instance every time. readResolve method is called after the object has been read from the stream but before it is returned to the calling code. For implementing this method just put the following code into your Serializable class:
+
+private Object readResolve(){
+		return instance;
+}
+
+3. Reflection can instantiate a Singleton multiple times
+
+Using java reflection api, we can tweak into a class by getting details like its fields, constructor, invoking its methods etc. Reflection can also be used to create new instance of a class. Obviously, if the class is Singleton, then creating a new instance again breaks its Singleton nature. See below
+
+try {
+	//load class
+	Class c = Class.forName("com.codippa.MyClass");
+	//get all constructors (whether public or private)
+	Constructor[] constructors = c.getDeclaredConstructors();
+	//suppress access check errors
+	constructors[0].setAccessible(true);
+	//instance no 1
+	System.out.println(constructors[0].newInstance());
+	//instance no 2
+	System.out.println(constructors[0].newInstance());
+} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+} catch (InstantiationException e) {
+		e.printStackTrace();
+} catch (IllegalAccessException e) {
+		e.printStackTrace();
+} catch (IllegalArgumentException e) {
+		e.printStackTrace();
+} catch (InvocationTargetException e) {
+		e.printStackTrace();
+}
+The above code prints
+com.MyClass@5d888759
+com. MyClass@2e6e1408
+
+Clearly the two objects are different.
+
+Remedy:
+
+Check the static instance to be not null and throw Error if it is not null which means one instance already exists as.
+
+private MyClass () {
+	if(inst!=null){
+		throw new InstantiationError("Already there");
+	}
+}
+Hope the above post let you understand the ways to break a Singleton. Keep the above points in mind when designing a Singleton.

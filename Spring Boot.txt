@@ -1,0 +1,231 @@
+														Spring Boot and Microservices
+												
+
+Benefits of Microservices:
+
+* Software built as microservices can be broken down into multiple parts so that each service can be deployed independently. So that it gives developers a chance to develop and deploy services independently.
+
+* Better Fault Isolcation - If one application fails others will continue to work.
+
+* Code for different services can be written in different languages.
+
+* Easy integration and automatic deployment; using open-source continuous integration tools such as Jenkins, etc.
+
+* The microservice architecture enables continuous delivery.
+
+* Easy to understand since they represent a small piece of functionality, and easy to modify for developers, thus they can help a new team member become productive quickly.
+
+* The code is organized around business capabilities.
+
+* Scalability and reusability, as well as efficiency. Easy to scale and integrate with third-party services.
+
+* Components can be spread across multiple servers or even multiple data centers.
+
+* Work very well with containers, such as Docker.
+
+* Microservices simplify security monitoring because the various parts of an app are isolated. A security problem could happen in one section without affecting other areas of the project.
+
+* Increase the autonomy of individual development teams within an organization, as ideas can be implemented and deployed without having to coordinate with a wider IT delivery function.
+
+------------------------------------------------
+												
+Difference between bootstap.yml and application.yml files: 
+	* bootstap.yml is loaded before application.yml
+	* When using Spring Cloud Config server we would like to specify spring.application.name and spring.cloud.config.name, uri etc
+	* some encryption/decryption information.
+	Technically bootstap.yml is loaded by parent ApplicationContext. That ApplicationContext is loaded before the ones that uses application.yml It is typically useful when we are using Spring Cloud Config. Upon application startup it makes a HTTP call to the config server and loads the properties based on the application name.
+	It typically includes two things. 1- name of the application 2- location of config server
+	
+------------------------------------------------
+
+Spring Boot Actuators:
+
+It provides several production-grade services to your application out of the box. Once Actuator is configured in your Spring Boot application, you can interact and monitor your application by invoking different HTTP endpoints exposed by Spring Boot Actuator such as application health, bean details, version details, configurations, logger details, etc.
+
+Spring Boot includes a number of built-in endpoints, and you can also add your own or even configure existing endpoints to be exposed on any custom endpoints of your choice. 
+
+It is obvious that all the endpoints cannot be exposed publicly, considering that there are many sensitive endpoints like beans, env, etc. Hence, Spring Boot also sets sensitive defaults to true for many endpoints that require a username/password when they are accessed over HTTP (or simply disabled if web security is not enabled). Health and info are not sensitive by default.
+
+health and info endpoints are by default not secured.
+
+HOW TO ENABLE SPRING BOOT ACTUATOR:
+
+add spring-boot-starter-actuator dependency in your class path.
+
+CUSTOMIZING ACTUATOR ENDPOINTS:
+
+endpoints.metrics.id = myid
+endpoints.metrics.sensitive = false
+endpoints.metrics.enabled = false
+
+Globally :
+
+endpoints.id = 
+endpoints.enabled
+
+Security :
+
+management.security.enabled = true
+security.basic.enabled = true
+security.user.name = admin
+security.user.password = admin
+
+Create your own Actuator Endpoints:
+
+/actuator - list of all other actuator endpoints
+/autoconfig - list of all candidates for auto configuration 
+/beans -  list of all the beans
+/configprops - It displays the collated list of all @ConfigurationProperties
+/env - 
+/health 
+/info 
+/metrics
+/mapping - It gives all @RequestMapping paths
+/shutdown - It allows the application to gracefully shutdown
+/trace - It displays last 100 http request for the application 
+
+
+MVC - 
+/heapdump
+/logfile
+
+https://dzone.com/articles/spring-boot-actuator-a-complete-guide
+
+http://www.devglan.com/spring-boot/spring-boot-actuator-rest-endpoints-example/#/customizing-actuator-endpoints
+
+http://www.devglan.com/spring-boot/spring-boot-actuator-rest-endpoints-example
+
+http://www.devglan.com/spring-security/securing-spring-boot-actuator-endpoints-with-spring-security
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Spring Boot Config Server :
+
+http://jeroenbellen.com/manage-and-reload-spring-application-properties-on-the-fly/
+
+* Add spring-cloud-config-server dependency in the classpath
+
+* Add @EnableConfigServer at your entry point in your application
+
+* Add the location of your config repo 
+
+server:
+  port: 8110
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.gapinc.com/rpt-xtreme/rpt-config-repo
+		  
+That's it
+
+Cloud Config Client : 
+
+* Add spring cloud config client in your classpath.
+
+* Add 
+
+spring:
+	cloud:
+		config:
+			name: rpt-recommendation-service
+			uri : http://localhost:8888
+			failFast : true
+			
+--
+
+spring:
+	profiles: default
+	cloud:	
+		config:
+			failFast : false
+
+--------------------------------
+
+Eureka Server :
+
+* Add dependency spring-cloud-starter-eureka-server in classpath.
+
+* @EnableEurekaServer at the starting point of your application 
+
+* 
+
+spring:
+	application: 
+		name: eureka-server
+		
+server:
+	port : 8071
+	
+eureka:
+	client:
+		registerWithEureka : false
+		fetchRegistry : false
+		server:
+			waitTimeInMsWhenSyncEmpty : 0
+			
+Eureka Service :
+
+* Add spring-cloud-starter-eureka in classpath
+* @EnableDiscoveryClient or @EnableEurekaClient
+
+spring:
+	application:
+		name : hello-server
+		
+server:
+	port : 8071
+	
+eureka:
+	client:
+		registerWithEureka : true
+		fetchRegistry : true
+		serviceUrl : 	
+			defaultZone : http://localhost:8070/eureka
+			
+	instance :
+		hostname : localhost 
+		
+		
+@LoadBalanced : Add this on the RestTemplate bean which we have created. Used as a marker annotation indicating that the annotated RestTemplate should use a RibbonLoadBalancerClient for interacting with your service. 
+
+In turn, this allows you to use "logical identifiers" for the URLs you pass to the RestTemplate. These logical identifiers are typically the name of a service. For example:
+
+restTemplate.getForObject("http://some-service-name/user/{id}", String.class, 1);
+where some-service-name is the logical identifier.
+
+----------
+
+Zuul Service :
+
+* Add spring-cloud-starter-zuul and spring-cloud-starter-eureka 
+
+* @EnableZuulProxy and @EnableDiscoveryClient or @EnableEurekaClient 
+
+---------------------------------
+
+Hystrix :  https://howtodoinjava.com/spring/spring-cloud/spring-hystrix-circuit-breaker-tutorial/#what-is-circuit-breaker
+
+ It is generally required to enable fault tolerance in the application where some underlying service is down/throwing error permanently, we need to fall back to different path of program execution automatically. This is related to distributed computing style of Eco system using lots of underlying Microservices. This is where circuit breaker pattern helps and Hystrix is an tool to build this circuit breaker.
+ 
+ * Add these dependencies spring-cloud-starter-hystrix and spring-cloud-starter-hystrix-dashboard
+ * @EnableCircuitBreaker and @EnableHystrixDashboard
+ * @HystrixCommand(fallbackMethod = "someMethod")
+ 
+ http://localhost:9098/hystrix.stream : It’s a continuous stream that Hystrix generates. It is just a health check result along with all the service calls that are being monitored by Hystrix.
+ 
+ http://localhost:9098/hystrix  : This is visual dashboard initial state.
+ 
+ http://localhost:9098/hystrix.stream in dashboard to get a meaningful dynamic visual representation of the circuit being monitored by the Hystrix component. Visual Dashboard after providing the Stream input in the home page
+ 
+ -----------------------------------
+ 
+ 
+ 
+ 
+
+
+

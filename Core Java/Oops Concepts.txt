@@ -1,0 +1,140 @@
+METHOD OVERLOADING IN JAVA:
+
+* Compiler checks method signature or 3 things for overloaded methods : method name, number of arguments , types of arguments
+
+* Overloaded methods may have same return types or different return types. It does not effect method overloading. If two methods have same signature and different return types, then those methods will not be treated as two different methods or methods overloaded. For duplication, compiler checks only method signature not return types. If method signature is same, straight away it gives duplicate method error.
+
+* Overloaded methods may have same access modifiers or different access modifiers. It also does not effect method overloading.
+
+* Overloaded methods may be static or non-static. This also does not effect method overloading.
+
+Important Points:
+
+* We can overload main method. A class can have any number of main() methods but execution starts from public static void main(String[] args) only.
+* Overloaded methods can be synchronized.
+* Overloaded methods can be final.
+* 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+METHOD OVERRIDING IN JAVA:
+
+* Rules for method overriding in Java - 
+	-> name of the method should be same in both super class and subclass.
+	-> The return type of the overrided method must be compatible with super class method. If super class method has primitive data type as its return type, then overrided method must have same return type in sub class also. If super class method has derived or user defined data type as its return type, then return type of sub class method must be of same type or its sub class.
+	-> You can keep same visibility or increase the visibility of overrided method but you can’t reduce the visibility of overrided methods in the subclass. For example, default method can be overided as default or protected or public method but not as private.
+	-> For method to be properly overrided, You must not change arguments of method in subclass. If you change the number of arguments or types of arguments of overrided method in the subclass, then method will be overloaded not overrided.
+	
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ABSTRACTION :
+
+* We can not create objects of those classes which are declared as abstract.
+* It is not compulsory that abstract class must have abstract methods. It may or may not have abstract methods. But the class which has at least one abstract method must be declared as abstract.
+* You can’t create objects to abstract class even though it does not contain any abstract methods.
+* Any class extending an abstract class must implement all abstract methods. If it does not implement, it must be declared as abstract.
+* Inside abstract class, we can keep any number of constructors. If you are not keeping any constructors, then compiler will keep default constructor.
+* Abstract methods can not be private. Because, abstract methods must be implemented somehow in the sub classes. If you declare them as private, then you can’t use them outside the class.
+* Constructors and fields can not be declared as abstract.
+* Abstract methods can not be static.
+* Abstract methods can have SIB and IIB.
+
+Question : We can’t instantiate an abstract class. Then why constructors are allowed in abstract class? -> It is because, we can’t create objects to abstract classes but we can create objects to their sub classes. From sub class constructor, there will be an implicit call to super class constructor. That’s why abstract classes should have constructors. Even if you don’t write constructor for your abstract class, compiler will keep default constructor.
+
+Question : Can a class contain an abstract class as a member? -> Yes
+
+Question : Can we declare abstract methods as synchronized? -> No, abstract methods can not be declared as synchronized. But methods which override abstract methods can be declared as synchronized.
+
+Question : Can we declare local inner class as abstract? -> YES
+
+Question : Can abstract method declaration include throws clause? -> YES
+
+INTERFACES :
+
+* Interface can have two types of members.  1) Fields     2) Abstract Methods.
+
+* By default, Every field of an interface is public, static and final. You can’t use any other modifiers other than these three for a field of an interface.
+
+* By default, All methods of an interface are public and abstract.
+
+* Like classes, for every interface .class file will be generated after compilation.
+
+* While implementing any interface methods inside a class, that method must be declared as public. Because, according to method overriding rule, you can’t reduce visibility of super class method. By default, every member of an interface is public and while implementing you should not reduce this visibility.
+
+interface InterfaceClass
+{
+    void methodOne();
+}
+ 
+class AnyClass implements InterfaceClass
+{
+    void methodOne()
+    {
+        //It gives compile time error.
+        //Interface methods must be implemented as public
+    }
+}
+
+* By default, Interface itself is not public but by default interface itself is abstract like below,
+
+* SIB – Static Initialization Block and IIB – Instance Initialization Block are not allowed in interfaces.
+
+Question : DOES AN INTERFACE EXTENDS OBJECT CLASS ? -> No Interfaces does not extend Object class but each interface implicitly declares all methods of Object class as abstract methods in interfaces unless there explicitly declared method with same signature. That is the reason interfaces have Object class methods.
+
+Question : Can interfaces become local members of the methods? -> No. You can’t define interfaces as local members of methods like local inner classes. They can be a part of top level class or interface.
+
+Question :  Can interfaces have static methods? -> No
+
+Question : Can an interface have a class or another interface as it’s members? -> Yes. Interfaces can have classes or interfaces as their members.
+
+
+-------------------------------------------------
+
+Question 1. Super class of all classes is java.lang.Object class, does this applies to Interface as well? What is super class of all Interface in Java?
+
+java.lang.Object class is the super class of all Java classes. All non-primitive types (including arrays) inherit either directly or indirectly from Object class. 
+For Interface that is not the case,
+Super class of Interface is null.
+
+From below program that will be clear.
+
+interface ITest{}
+class CTest{}
+ 
+class Test{ 
+ public static void main(String[] args) {
+  System.out.println(CTest.class.getSuperclass()); // class java.lang.Object
+  System.out.println(int[].class.getSuperclass()); // class java.lang.Object
+  System.out.println(ITest.class.getSuperclass()); // null
+  System.out.println(int.class.getSuperclass());   // null
+ }
+}
+
+-------------------------------------
+
+
+Question 5. What is the output of below program? Is it valid overriding of method test() of interface ITest?
+
+interface ITest{
+ Object test(Object o) throws IOException;
+}
+ 
+class CTest implements ITest{
+ @Override
+ public synchronized String test(Object o) throws IOException, FileNotFoundException, EOFException, 
+            StackOverflowError, IndexOutOfBoundsException{
+  return "hello";
+ }
+}
+Yes. It is perfectly valid method overriding. 
+Access specifier of method cannot be changed which is public in class CTest and is valid.
+Adding or removing synchronized keyword doesn't take part in overriding as it is upto implementer whether they want several threads to allow method execution simultaneously or one after another. So it is valid.
+Return type should be same or compatible(belong from hierarchy). String(all class) by default extends Object, so belongs from hierarchy and is valid.
+Name of method should be exactly same and it is valid.
+Parameter should be exactly same and it is valid. 
+Note: Compatible parameters that is parameter from same hierarchy tree is Invalid and it should be exactly same.(In our case, decaring parameter as String for test() in CTest is invalid).
+For Exception, If overriding method choose not to throw any Exception is perfectly valid even if overriden method in interface is throwing. 
+So in our case if overriding test() method choose not to throw any Exception then also it is perfectly valid.
+If it throws then it should be same or any number of compatible exceptions.
+Runtime exception will not take part in overriding, it is upto overriding method to throw or not to throw Runtime exception.

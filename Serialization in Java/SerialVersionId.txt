@@ -1,0 +1,13 @@
+https://howtodoinjava.com/core-java/serialization/serialversionuid-in-java-and-related-fast-facts/
+
+Q) Other than Serialization what are the different approach to make object Serializable?
+
+Ans) Besides the Serializable interface, at least three alternate approaches can serialize Java objects:
+
+For object serialization, instead of implementing the Serializable interface, a developer can implement the Externalizable interface, which extends Serializable. By implementing Externalizable, a developer is responsible for implementing the writeExternal() and readExternal() methods. As a result, a developer has sole control over reading and writing the serialized objects.
+XML serialization is an often-used approach for data interchange. This approach lags runtime performance when compared with Java serialization, both in terms of the size of the object and the processing time. With a speedier XML parser, the performance gap with respect to the processing time narrows. Nonetheless, XML serialization provides a more malleable solution when faced with changes in the serializable object.
+Finally, consider a "roll-your-own" serialization approach. You can write an object's content directly via either the ObjectOutputStream or the DataOutputStream. While this approach is more involved in its initial implementation, it offers the greatest flexibility and extensibility. In addition, this approach provides a performance advantage over Java serialization.
+
+Important Question and Answers Link : http://www.fromdev.com/2012/06/15-java-serialization-interview.html
+
+

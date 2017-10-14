@@ -1,0 +1,545 @@
+WHY WE NEED GENERICS :
+
+Generics is used to check the type compatibility at compile time and hence removing the chances of occuring ClassCastException at run time.
+
+public class MainClass{
+	public static void main(String[] args){
+		ArrayList list = new ArrayList();
+		list.add("ABC");
+		list.add(123);
+		
+		for(Object obj : list){
+			String s = (String) obj; --> This will give class cast exception, which is run time exception 
+			System.out.println(s);
+		}
+	} 
+}
+
+By Generics we can resolve this.
+
+public class MainClass{
+	public static void main(String[] args){
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("ABC");
+		list.add(123); --> compile time error
+	} 
+}
+
+------------------------------------
+
+HOW TO CREATE OUR OWN GENERIC CLASS :
+
+While creating an instance to the below generic class, you can pass any class type as a type parameter and that class type replaces generic ‘T’ for that object. For example, if you pass String type as a type parameter then String will be the type of variable ‘t’. If you pass Integer as type parameter than Integer will be the type of variable ‘t’.
+
+The syntax for defining generic class is as follows,
+
+	class Class_Name<T1, T2, T3 ... Tn>
+		{
+			//Generic Type or Parameterized type
+		}
+	
+	class GenericClass<T>
+		{
+			T t;
+		 
+			public GenericClass(T t)
+			{
+				this.t = t;
+			}
+		 
+			public void setT(T t)
+			{
+				this.t = t;
+			}
+		 
+			public T getT()
+			{
+				return t;
+			}
+		}
+		
+	Example:
+	
+	public class GenericsInJava
+		{
+			public static void main(String[] args)
+			{
+				GenericClass<String> gen1 = new GenericClass<String>("It must be string");
+		 
+				gen1.setT("Value Changed");        //Passing String to setT() method
+		 
+				String s = gen1.getT();              //getT() method returning string
+		 
+				gen1.setT(new Integer(123));      //Compile time error. You can't pass Integer type to setT() method now
+		 
+				gen1.setT(new Double(23.56));    //Compile time error. You can't pass Double type to setT() method now
+			}
+		}
+		
+--------------------------------------------
+
+GENERICS WORKS WITH ONLY DERIVED TYPES :
+
+While creating an instance of generic class, you must pass only derived types. You can’t pass primitive types. If you pass primitive type, it gives compile time error. i.e generics works only with derived type.
+
+public class GenericsInJava
+{
+    public static void main(String[] args)
+    {
+        GenericClass<int> gen1 = new GenericClass<int>(123);   //Error, can't use primitive type
+ 
+        GenericClass<float> gen2 = new GenericClass<float>(23.56);  //Error, can't use primitive type
+    }
+}
+
+---------------------------------------------
+
+Objects Of Same Generic Class Differ Based On Their Type Parameters :
+
+Objects of same generic class differ depending upon their type parameters. For example, object of above generic class created using String type is not compatible with an object of same class created using Integer type.
+
+public class GenericsInJava
+{
+    public static void main(String[] args)
+    {
+        GenericClass<String> gen1 = new GenericClass<String>("Value Of t");
+ 
+        GenericClass<Integer> gen2 = new GenericClass<Integer>(new Integer(20));
+ 
+        gen1 = gen2;        //Error : Type mismatch
+ 
+        gen2 = gen1;        //Error : Type mismatch
+    }
+}
+
+------------------------------------------
+
+Generic Class With Two Type Parameters :
+
+Below is an example of a generic class with two type parameters.
+
+class GenericClass<T1, T2>
+{
+    T1 t1;
+ 
+    T2 t2;
+ 
+    public GenericClass(T1 t1, T2 t2)
+    {
+        this.t1 = t1;
+ 
+        this.t2 = t2;
+    }
+ 
+    public void setT1(T1 t1)
+    {
+        this.t1 = t1;
+    }
+ 
+    public T1 getT1()
+    {
+        return t1;
+    }
+ 
+    public void setT2(T2 t2)
+    {
+        this.t2 = t2;
+    }
+ 
+    public T2 getT2()
+    {
+        return t2;
+    }
+}
+ 
+public class GenericsInJava
+{
+    public static void main(String[] args)
+    {
+        GenericClass<String, Integer> gen1 = new GenericClass<String, Integer>("Value of t1", new Integer(123));
+ 
+        GenericClass<Integer, String> gen2 = new GenericClass<Integer, String>(new Integer(123), "Value of t2");
+ 
+        System.out.println(gen1.getT1());       //Output : Value of t1
+ 
+        System.out.println(gen1.getT2());       //Output : 123
+ 
+        System.out.println(gen2.getT1());       //Output : 123
+ 
+        System.out.println(gen2.getT2());       //Output : Value of t2
+    }
+}
+
+-------------------------------------------------
+
+You can pass your own type while creating an instance to the generic class. Here is an example for that. 
+
+class GenericClass<T>
+{
+    T t;
+ 
+    public GenericClass(T t)
+    {
+        this.t = t;
+    }
+ 
+    public void setT(T t)
+    {
+        this.t = t;
+    }
+ 
+    public T getT()
+    {
+        return t;
+    }
+}
+ 
+class A
+{
+    int i;
+ 
+    public A(int i)
+    {
+        this.i = i;
+    }
+}
+ 
+public class GenericsInJava
+{
+    public static void main(String[] args)
+    {
+        GenericClass<A> gen1 = new GenericClass<A>(new A(10));     //Passing A-type as type parameter
+ 
+        GenericClass<A> gen2 = new GenericClass<A>(new A(20));     //Passing A-type as type parameter
+ 
+        System.out.println(gen1.getT().i);    //Output : 10 
+ 
+        System.out.println(gen2.getT().i);    //Output : 20
+    }
+}
+
+----------------------------------------------------------------------------------
+
+GENERIC INTERFACES :
+
+Like generic classes, you can also define generic interfaces. The same syntax used to define generic classes is also used to define generic interfaces. Here is an example of generic interface.
+
+	interface GenericInterface<T>
+	{
+		void setT(T t);    
+	 
+		T getT();
+	}
+	
+Rules To Follow While Implementing Generic Interfaces :
+
+* Only generic classes can implement generic interfaces. Normal classes can’t implement generic interfaces. For example, above generic interface can be implemented as,
+
+	class GenericClass<T> implements GenericInterface<T>
+	{
+	 
+	}
+
+Not like below. It gives compile time error.
+
+	class NormalClass implements GenericInterface<T>
+	{
+		 //Compile time error
+	}
+
+	Here is the full implementation of above generic interface.
+
+	class GenericClass<T> implements GenericInterface<T>
+	{
+		T t;
+	 
+		//Implementing setT() method
+	 
+		@Override
+		public void setT(T t)
+		{
+			this.t = t;
+		}
+	 
+		//Implementing getT() method
+	 
+		@Override
+		public T getT()
+		{
+			return t;
+		}
+	}
+	
+* A normal class can implement a generic interface if type parameter of generic interface is a wrapper class. For example, below implementation of GenericInterface is legal.
+
+	interface GenericInterface<Integer>
+		{
+			   //Generic interface with Integer as type parameter
+		}
+	 
+	class NormalClass implements GenericInterface<Integer>
+		{
+			   //Normal class implementing generic interface
+		}
+		
+* Class implementing generic interface at least must have same number and same type of parameters and at most can have any number and any type of parameters.
+
+	interface GenericInterface<T>
+	{
+		//Generic interface with one type parameter
+	}
+	 
+	class GenericClass1<T> implements GenericInterface<T>
+	{
+		//Class with same type parameter
+	}
+	 
+	class GenericClass2<T, V> implements GenericInterface<T>
+	{
+		//Class with two type parameters
+	}
+	 
+	class GenericClass<T1, T2> implements GenericInterface<T>
+	{
+		//Compile time error, class having different type of parameters
+	}
+	
+	
+	EXAMPLE 2: 
+
+	interface GenericInterface<T1, T2, T3, T4>
+	{
+		//Generic interface with 4 type parameters
+	}
+	 
+	class GenericClass1<T1, T2, T3, T4, T5> implements GenericInterface<T1, T2, T3, T4>
+	{
+		//Generic class with 5 type parameters implementing generic interface with 4 type parameters
+	}
+	 
+	class GenericClass2<T1, T2, T3> implements GenericInterface<T1, T2, T3, T4>
+	{
+		//Compile time error, must have same number of type parameters
+	}
+	 
+	class GenericClass3<T1, T2, T5, T6> implements GenericInterface<T1, T2, T3, T4>
+	{
+		//Compile time error. must have same type of parameters
+	}
+	
+* You can change the type of parameter passed to generic interface while implementing it. When changed, the class which is implementing should have new type as parameter and also, you have to change old type with new type while implementing the methods.
+
+	interface GenericInterface<T>
+	{
+		void setT(T t);
+	 
+		T getT();
+	}
+ 
+//Changing the type of parameter passed to GenericInterface while implementing
+ 
+	class GenericClass<V> implements GenericInterface<V>
+	{
+		V t;
+	 
+		@Override
+		public void setT(V t)    //Changing the type of parameter
+		{
+			this.t = t;
+		}
+	 
+		@Override
+		public V getT()          //Changing the return type
+		{
+			return t;
+		}
+	}
+	
+* Class can implement more than one generic interfaces. If implemented, class should have type parameters of both the interfaces.
+
+	interface GenericInterface1<T1>
+	{
+		//Generic interface with one type parameter
+	}
+	 
+	interface GenericInterface2<T2, T3>
+	{
+		//Generic interface with two type parameters
+	}
+	 
+	class GenericClass<T1,T2, T3> implements GenericInterface1<T1>, GenericInterface2<T2, T3>
+	{
+		//Class having parameters of both the interfaces
+	}
+	
+-------------------------------------
+
+CAN WE DEFINE METHODS OR CONSTRUCTORS AS GENERICS : 
+
+One more addition to generics is Generic Methods. If you don’t want whole class or interface to be generic, you want only some part of class as generic, then generic methods will be solution for this.
+
+	<type-Parameters> return_type method_name(parameter list)
+	{
+	 
+	}	
+	
+type parameters are mentioned just before the return type. It is a rule you must follow while defining generic methods. The remaining parts are same as in normal method.
+
+Generic methods can be static or non-static. There is no restriction for that. Generic class as well as non-generic class can have generic methods.
+
+	class NonGenericClass
+	{    
+		static <T> void genericMethod(T t1)
+		{
+			T t2 = t1;
+			 
+			System.out.println(t2);
+		}
+	}
+
+	public class GenericsInJava
+	{
+		public static void main(String[] args)
+		{
+			NonGenericClass.genericMethod(new Integer(123));     //Passing Integer type as an argument 
+			 
+			NonGenericClass.genericMethod("I am string");        //Passing String type as an argument
+			 
+			NonGenericClass.genericMethod(new Double(25.89));    //Passing Double type as an argument
+		}
+	}	
+	
+-------------------------
+
+CONSTRUCTORS AS GENERIC :
+
+As we all know that constructors are like methods but without return types. Like methods, constructors also can be generic. Even non-generic class can have generic constructors. 
+
+	class NonGenericClass
+	{    
+		public <T> NonGenericClass(T t1)
+		{
+			T t2 = t1;
+			 
+			System.out.println(t2);
+		}
+	}
+	 
+	public class GenericsInJava
+	{
+		public static void main(String[] args)
+		{
+			//Creating object by passing Integer as an argument
+			 
+			NonGenericClass nonGen1 = new NonGenericClass(123);
+			 
+			//Creating object by passing String as an argument
+			 
+			NonGenericClass nonGen2 = new NonGenericClass("abc");
+			 
+			//Creating object by passing Double as an argument
+			 
+			NonGenericClass nonGen3 = new NonGenericClass(25.69);
+		}
+	}
+-----------------------------------
+
+BOUNDED TYPES IN GENERICS :
+
+We have seen that while creating objects to generic classes we can pass any derived type as type parameters. Many times it will be useful to limit the types that can be passed to type parameters. For that purpose, bounded types or bounded type parameters are introduced in generics. Using bounded types, you can make the objects of generic class to have data of specific derived types.
+
+For example, If you want a generic class that works only with numbers (like int, double, float, long …..) then declare type parameter of that class as a bounded type to java.lang.Number class. Then while creating objects to that class you have to pass only Number types or it’s subclass types as type parameters.
+
+Here is the syntax for declaring Bounded type parameters.
+
+<T extends SuperClass>
+
+This specifies that ‘T’ can only be replaced by ‘SuperClass’ or it’s sub classes. Remember that extends clause is an inclusive bound. That means bound includes ‘SuperClass’ also.
+
+	class GenericClass<T extends Number>    //Declaring Number class as upper bound of T
+	{
+		T t;
+	 
+		public GenericClass(T t)
+		{
+			this.t = t;
+		}
+	 
+		public T getT()
+		{
+			return t;
+		}
+	}
+
+	public class GenericsInJava
+	{
+		public static void main(String[] args)
+		{
+			//Creating object by passing Number as a type parameter
+	 
+			GenericClass<Number> gen1 = new GenericClass<Number>(123);
+	 
+			//Creating object by passing Integer as a type parameter
+	 
+			GenericClass<Integer> gen2 = new GenericClass<Integer>(new Integer(456));
+	 
+			//Creating object by passing Double as a type parameter
+	 
+			GenericClass<Double> gen3 = new GenericClass<Double>(new Double(23.589));
+	 
+			//Creating object by passing Long as a type parameter
+	 
+			GenericClass<Long> gen4 = new GenericClass<Long>(new Long(12));
+	 
+			//While Creating object by passing String as a type parameter, it gives compile time error
+	 
+			GenericClass<String> gen5 = new GenericClass<String>("I am string");   //Compile time error
+		}
+	}
+
+BOUNDED TYPES PARAMETERS IN GENERIC METHODS :
+
+You can use bounded types while defining generic methods also. Here is an example.
+
+	class GenericClass
+	{
+		//Declaring T as bounded type to Number class
+	 
+		public static <T extends Number> void printNumbers(T[] t)
+		{
+			for (int i = 0; i < t.length; i++)
+			{
+				System.out.println(t[i]);
+			}
+		}
+	}
+	 
+	public class GenericsInJava
+	{
+		public static void main(String[] args)
+		{
+			//Passing Integer[] array while calling printNumbers()
+	 
+			GenericClass.printNumbers(new Integer[] {new Integer(10), new Integer(20), new Integer(30), new Integer(40)} );
+	 
+			//Passing Double[] array while calling printNumbers()
+	 
+			GenericClass.printNumbers(new Double[] {new Double(21.45), new Double(20.45), new Double(34.87), new Double(48.36)} );
+	 
+			//Passing String[] array while calling printNumbers(), it gives compile time error
+	 
+			GenericClass.printNumbers(new String[] {"one", "Two", "Three", "Four"});    //Compile time error
+		}
+	}
+	
+Using Interface As An Upper Bound :
+
+You can also use interface type along with class type as an upper bound to type parameters. As in java, any class can extend only one class and can implement multiple interfaces, this also applies while declaring the bound to type parameters. That means a bounded parameter can extend only one class and one or more interfaces. While specifying bounded parameters that has a class and an interface or multiple interfaces, use & operator as a delimiter.
+
+	class GenericClass <T extends AnyClass & FirstInterface & SecondInterface>
+	{    
+	 
+	}
+	
+--------------------------------------------
+

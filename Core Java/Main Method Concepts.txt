@@ -1,0 +1,75 @@
+Question : Can We Overload main() method?
+
+Answer : Yes, We can overload main() method. A Java class can have any number of main() methods. But to run the java class, class should have main() method with signature as “public static void main(String[] args)”. If you do any modification to this signature, compilation will be successful. But, you can’t run the java program. You will get run time error as main method not found.
+
+------------------------
+
+Question : Can we declare main() method as private or protected or with no access modifier?
+
+Answer : No, main() method must be public. You can’t define main() method as private or protected or with no access modifier. This is because to make the main() method accessible to JVM. If you define main() method other than public, compilation will be successful but you will get run time error as no main method found.
+
+---------------------
+
+Question : Can We Declare main() Method As Non-Static?
+
+Answer : No, main() method must be declared as static so that JVM can call main() method without instantiating it’s class. If you remove ‘static’ from main() method signature, compilation will be successful but program fails at run time.
+
+----------------------
+
+Question : Why main() method must be static?
+
+Answer : Suppose, If main() is allowed to be non-static, then while calling the main method JVM has to instantiate it’s class. While instantiating it has to call constructor of that class. There will be an ambiguity if constructor of that class takes an argument. For example, In the below program what argument JVM has to pass while instantiating class “MainMethod”?.
+
+	public class MainMethod
+	{
+		public MainMethod(int i)
+		{
+			//Constructor taking one argument
+		}
+	 
+		public void main(String[] args)
+		{
+			//main method as non-static
+		}
+	}
+
+That’s why main() method must be static.
+
+----------------------
+
+Question : Can we change return type of main() method?
+
+Answer : No, the return type of main() method must be void only. Any other type is not acceptable.
+
+---------------------
+
+Question : Can main() method take an argument other than string array?
+
+Answer : No, argument of main() method must be string array. But, from the introduction of var args you can pass var args of string type as an argument to main() method. Again, var args are nothing but the arrays.
+
+	public class MainMethod
+	{
+		public static void main(String... args)
+		{
+			//Var args as an argument
+		}
+	}
+	
+-----------------------------
+
+Question : Can we run java class without main() method?
+
+Answer : No, you can’t run java class without main method. But, there are some scenarios like if super class has main() method, then sub class can be run without defining main() method in it. For example, if you run class B in the below program, you will get 1 as output.
+
+class A
+{
+    public static void main(String[] args)
+    {
+        System.out.println(1);
+    }
+}
+ 
+public class B extends A
+{
+ 
+}

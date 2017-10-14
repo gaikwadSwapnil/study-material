@@ -1,0 +1,16 @@
+Lamba Expressiion :
+
+In programming, a Lambda expression (or function) is just an anonymous function, i.e., a function with no name and without being bounded to an identifier.
+
+Basic Syntax :
+
+		(paramater) -> expression
+		OR
+		(paramater) -> { statements }
+		OR 
+		() -> expression
+
+Example :
+(x,y) -> x+y //This function takes two parameters and return their sum.
+
+

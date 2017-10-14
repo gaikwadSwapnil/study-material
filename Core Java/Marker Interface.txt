@@ -1,0 +1,224 @@
+Marker Interface in java is an interface with no fields or methods within it. It is used to convey to the JVM that the class implementing an interface of this category will have some special behavior.
+
+Hence, an empty interface in java is called a marker interface.
+
+* Searilizable interface
+* Cloneable interface
+* Remote interface
+* ThreadSafe interface
+
+The marker interface can be described as a design pattern which is used by many languages to provide run-time type information about the objects. The marker interface provides a way to associate metadata with the class where the language support is not available.
+
+Usage of Marker Interface in java:
+
+Marker interface in Java e.g. Serializable, Clonnable and Remote is used to indicate something to compiler or JVM that the class implementing any of these would have some special behavior. Hence, if the JVM sees a Class is implementing the Serializable interface it does some special operation on it and writes the state of the object into object stream.
+This object stream is then available to be read by another JVM. Similarly if JVM finds that a class is implementing Clonnable interface, it performs some special operation in order to support cloning. The same theory goes for RMI and Remote interface. This indication (to the JVM) can also be done using a boolean flag or a String variable inside the class.
+
+Apart from using the built-in marker interface, to mark a class as serializable or clonnable, we can also have our own marker interface. Marker interface is a good way to logically segregate the code and also if we have our own tool to perform some preprocessing operation on the classes. It is very useful for developing frameworks or APIs e.g. struts or spring.
+
+The Thread Safe interface is a marker interface which can be used to communicate to other developers that classes implementing this marker interface gives thread-safe guarantee and any modification should not violate that. Marker interface also helps code coverage or code review tool to find bugs based on specified behavior of marker interfaces. Here also annotations are better choice. @ThreadSafe looks lot better than implementing Thread Safe marker interface.
+
+SERIALIZABLE INTERFACE :
+
+Marker interface in Java e.g. Serializable, Clonnable and Remote is used to indicate something to compiler or JVM that the class implementing any of these would have some special behavior. Hence, if the JVM sees a Class is implementing the Serializable interface it does some special operation on it and writes the state of the object into object stream. This object stream is then available to be read by another JVM. Similarly if JVM finds that a class is implementing Clonnable interface, it performs some special operation in order to support cloning. The same theory goes for RMI and Remote interface. This indication (to the JVM) can also be done using a boolean flag or a String variable inside the class.
+
+Apart from using the built-in marker interface, to mark a class as serializable or clonnable, we can also have our own marker interface. Marker interface is a good way to logically segregate the code and also if we have our own tool to perform some preprocessing operation on the classes. It is very useful for developing frameworks or APIs e.g. struts or spring.
+
+With the introduction of annotation in java 5, annotation has become a better choice over maker interface.
+
+The Thread Safe interface is a marker interface which can be used to communicate to other developers that classes implementing this marker interface gives thread-safe guarantee and any modification should not violate that. Marker interface also helps code coverage or code review tool to find bugs based on specified behavior of marker interfaces. Here also annotations are better choice. @ThreadSafe looks lot better than implementing Thread Safe marker interface.
+
+In short a marker interface in Java is used to indicate something to compiler, JVM or any other tool but Annotation is better way of doing same thing.
+
+The Serializable interface:
+The serializable interface provides a mechanism of object serialization where an object is represented as a sequence of bytes. Object serialization writes the object into stream. Once an object is serialized and written into a file, it can be read from the file and deserialized. Deserialization is the process of reading the object from the file and reconstructing the object in the memory. The entire process of serialization and deserialization is JVM independent. An object serialized by one JVM can easily be read across another JVM.
+
+At high level, ObjectOutputStream and ObjectInputStream classes contains methods for serializing and deserializing objects. The class ObjectoutputStream contains methods for writing the object into the disk. The most commonly used method is:
+
+ public final void writeObject(Object x) throws IOException . 
+Similarly the class, ObjectInputStream contains methods for reading the object data from the file. The most commonly used method used for this is:
+
+ public final Object readObject() throws IOException, ClassNotFoundException   
+Listing 1: Sample class implementing Serializable
+
+package com.home.markerDemo;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @author Kaushik Pal
+ *
+ */
+public class Employee implements Serializable {
+
+	/**
+	 * The seialized version Id
+	 */
+	private static final long serialVersionUID = -3771755785034784363L;
+
+	/**
+	 * The constructor
+	 */
+	public Employee() {
+		
+	}
+	
+	// The first name
+	private String firstName;
+	
+	// The last name
+	private String lastName;
+	
+	// The date of joining
+	private Date dateOfJoining;
+	
+	// The department of the employee
+	private String department;
+	
+	// The ecode of the employee
+	private int ecode;
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * @return the dateOfJoining
+	 */
+	public Date getDateOfJoining() {
+		return dateOfJoining;
+	}
+
+	/**
+	 * @param dateOfJoining the dateOfJoining to set
+	 */
+	public void setDateOfJoining(Date dateOfJoining) {
+		this.dateOfJoining = dateOfJoining;
+	}
+
+	/**
+	 * @return the department
+	 */
+	public String getDepartment() {
+		return department;
+	}
+
+	/**
+	 * @param department the department to set
+	 */
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	/**
+	 * @return the ecode
+	 */
+	public int getEcode() {
+		return ecode;
+	}
+
+	/**
+	 * @param ecode the ecode to set
+	 */
+	public void setEcode(int ecode) {
+		this.ecode = ecode;
+	}
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+}
+Listing 2: Sample class implementing marker interface
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.home.markerDemo.Employee;
+
+public class SerializeDemo {
+
+	public SerializeDemo() {
+	}
+
+	public static void main(String[] args) {
+		Employee employee = new Employee();
+		employee.setFirstName( "John" );
+		employee.setLastName( "Smith" );
+		employee.setDepartment( "Technical" );
+		employee.setEcode(1234);
+		try {
+			String dojStr = "1971-07-15";
+			DateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
+			Date dojDate = null;
+			dojDate = df.parse(dojStr);
+
+			employee.setDateOfJoining(dojDate);
+			FileOutputStream fileOut = new FileOutputStream( "employee.ser" );
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(employee);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+In the above example, the class Employee is implementing the serializable interface. Thus, the object employee is written in the object stream. The serializable interface is useful when we need to use an object across different JVMs. e.g. incase of multilayered applications where the different layers are on different JVMs.
+
+The cloneable interface:
+A cloneable interface, allows a developer to create the clone of an object. In order to get the clone of an object, it is required to type casted into its appropriate type. If a class is not implementing the cloneable interface, and we try to clone that object we get a CloneNotSupportedException . In the process of cloning, the constructor is not called rather an exact copy of the said object is created. But the object of which the clone is created, must implement the cloneable interface.
+
+The class Object's clone () method creates and returns a copy of the object, with the same class and with all the fields having the same values. However, Object.clone () throws a CloneNotSupportedException unless the object is an instance of a class that implements the marker interface Cloneable.
+
+The default implementation of Object.clone () performs a shallow copy. If a class requires a deep copy or some other custom behavior, it must have its customized clone () method after they obtain the copy from the super class.
+
+Conclusion:
+Marker interface in java is an interface which does not have any method. Marker interface is used to inform the JVM that the classes implementing them will have some special behavior. In java we have following four major marker interfaces:
+
+Searilizable interface
+Cloneable interface
+Remote interface
+ThreadSafe interface
+
+
+Read more: http://mrbool.com/what-is-marker-interface-in-java/28557#ixzz4swvfCZeT
+
+
+ 

@@ -1,0 +1,10 @@
+Java Concepts
+Java 8
+Spring
+Spring Boot
+Microservices
+CloudFoundry
+MongoDB
+SQL (Postgres)
+Design Patterns
+Data Structures
