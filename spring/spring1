@@ -1,0 +1,87 @@
+Spring FrameWork:
+	* Java spring framework is an open source framework that provides all infrastructure needs for the rapid development of standard and enterprise java applications .
+	* Develop by Rod Johnson in Feb 2003
+	* Features
+		Powerful open source
+		Lightweight applications framework
+		Reduces overall complexity
+		framework of frameworks
+		Distinct division between javaBean models, controllers, views
+		Spring MVC is very flexible as it makes use of interface
+		Layered architecture, loose coupling
+		Support for REST style web services.
+		Support for dependency injection which means all the required dependencies will be resolved with the help of containers .
+		Support for interaction with database.
+	
+Spring Modules:	
+	Core Containers – Includes Beans, Core, Context and SpEL modules
+	Data Access/Integration- includes JDBC, ORM, OXM, JMS and Transactions modules
+	Web- Includes Web Socket, Servlet, Web and Portlet modules
+	AOP (Aspect Oriented Programming)
+	Instrumentation
+	Messaging
+	Test
+	
+Dependency Injection (DI):	
+	Dependency Injection is at the heart of the Spring framework.
+	The basic concept of the Dependency Injection is that framework provides the dependencies of class itself.
+	We need not create the objects instead we just define how they should be created and IoC container will create the objects for us.
+	e.g. => if we have two classes ‘ClassA’ and ‘ClassB’. ClassA is dependent on ClassB 
+			then container will inject the instance of ClassB in an instance of ClassA.
+			
+Spring Framework Architecture:
+	Spring Framework is a layered or modular architecture. 
+	There are around 20 modules and applications need to deploy/use only required modules.
+
+			|-------------------------------------------------------------------------------------------------------|
+			|	-----------------------------------				  ----------------------------------                				|
+			|	|	Data Access Integration		      |		      |			    Web                     |                       |
+			|	-----------------------------------				  ----------------------------------				                |               
+			|	|    	Transactions		            |				  | 	Servlet				Portlet         |                       |
+			|	|	 OXM			ORM			              |				  |			                            |                       |
+			|	|	 JDBC			JMS			              |				  |	    Web Socket			Web         |                       |
+			|	-----------------------------------	        ----------------------------------                        |                                                                       |
+			|																										                                                    |		
+			|			AOP				Aspect					Instrumentation				Messaging                                         |
+			|		                                                                                                    |
+			|	---------------------------------------------------------------------------------------------	      	|
+			|	|								Core Containers                                                             |         |
+			|	|		Core 			Beans					SpEL				Context	                                            |         |
+      | ---------------------------------------------------------------------------------------------         |
+			|																										                                                    |		
+			|	----------------------------------------------------------------------------------------------		    |
+			|	|									Test                                                                       |      	|
+			| ----------------------------------------------------------------------------------------------        |                                                                                              |
+			|_______________________________________________________________________________________________________|
+			
+Spring Core Container:
+	1) Spring Core: as par name it is core module of spring, provides implementation of several features including IoC(Inversion of Control).
+					IoC also known of dependency injection.
+	2) Spring Beans: Module provides the implementation of BeanFactory.
+	3) Spring Context: Spring core and spring beans modules are the foundation of context module.
+					   this provides the implementation of Application context which is mean to access object in a framework-style manner.
+					   Context module inherits its features from the Beans module and adds support for other features like internationalization,events,propagation etc.
+	4) SpEL: Spring Expression Language
+			  This module is an extension to expression language supported by Java server pages and also represented as SpEL. 
+			  This modules helps in achieving dynamic behavior.
+
+Spring Data Access and  Integration:
+	1) Transaction: The transaction module provides supports programmatic and declarative transaction management that provides benefits like 
+					Consistent programming model across different transaction APIs such as Java Transaction API (JTA), JDBC, Hibernate, 
+					Java Persistence API (JPA), and Java Data Objects (JDO).
+					Simpler API for programmatic transaction management than complex transaction APIs such as JTA.
+	2) OXM (Object/XML Mapping): This module provides an abstraction layer that supports Object/XML mapping implementations such as JAXB,  XMLBeans, JiBX
+	3) ORM ( Object Relationship Mapping): this module supports the integration of application with other ORM frameworks like JPA, JDO, and Hibernate.
+	4) JDBC (Java Database Connectivity): We all have used JDBC somewhere to connect to the database and repetitive code need to be written every time.
+					The module is kind of wrapper on JDBC which eliminates the need to repetitive and unnecessary exception handling overhead
+	5) JMS (Java Messaging Service): The  JMS module (Java Messaging Service) includes features for sending and receiving messages between many clients			
+	
+Spring Web:
+	1) Web- The web module provides support for features like file upload , webapplication-context  implementation etc.
+	2) Servlet– This module is also known as spring-web-mvc module and provides  M V C implementation for web applications.
+	3) Portlet- This module is also known as spring-webmvc-portlet module provides the support for Spring based Portlets
+	
+Test: 
+	This module provides support of  the unit testing and integration testing with other testing frameworks like JUnit or TestNG.
+	
+	
