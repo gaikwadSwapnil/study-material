@@ -1,0 +1,265 @@
+Spring Beans AutoWiring: 
+	* Spring framework provides an  autowiring feature with which we need not to use ref attribute 
+	 and provide bean references explicitly instead we can configure the auto-wire mode 
+	 and spring container automatically wires the beans.
+	* We can configure auto wire mode using “autowire” attribute
+		<bean id="bean_id" class="bean_class" autowire="default | byname | byType | constructor | autodetect " />
+
+	* Following are the different autowiring modes supported by Spring.
+		1) Default or no
+		2) byname
+		3) byType
+		4) constructor
+		5) autodetect
+		
+	* With spring 2.5 onwards , we can use following annotations as well
+		@Autowired
+		@Qualifier
+	Note:
+		Explicit dependencies using < property> and <constructor-arg> settings always override the auto wiring.
+		Currently not possible to autowire simple properties such as String, primitive types, collections etc.  
+		
+1) Default or no :
+	This is default setting and there will be no auto wiring.
+	Below three statements are equivalent
+		<bean id="bean_id" class="bean_class" autowire="default"/>
+		<bean id="bean_id" class="bean_class" autowire="no "/>
+		<bean id="bean_id" class="bean_class" />
+		
+2) byName:
+	In this mode autowiring performs based on the name of property.	
+		<bean id="bean_id" class="bean_class" autowire="byName"/>
+		
+3) byType:
+	In this mode autowiring performs based on the class type of property.
+	Container inspects the spring configuration file and looks for the bean of same class type. 
+	This mode is applied on Setter methods.
+		- If no bean with class type found than property will remain unset
+		- If one bean with class type found then property will be set
+		- If there are multiple beans found with class type in beans configuration found, then exception will be thrown.
+	 <bean id="bean_id" class="bean_class" autowire="byType"/>
+
+4) constructor:
+	Constructor auto wiring mode is similar to byType with the difference is that this mode is applied on constructor arguments 
+	where as byType applies on setter methods of properties.
+		- If no bean with class type found in beans configuration found, then exception will be thrown.
+		- If one bean with class type found then property will be set
+		- If there are multiple beans found with class type in beans configuration found, 
+			then exception will be thrown if default constructor is not defined else default constructor will be used.
+
+      <bean id="bean_id" class="bean_class" autowire="constructor"/>
+
+5) autodetect:
+	This auto wring mode  resolves auto wiring either by constructor or byType, as determined by Spring container. 
+	If constructor mode does not satisfies dependency then byType mode is used	  
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------
+	
+Annotation Based Container Configurations in Spring:
+	* XML configurations are injected after annotations so whenwe use both annotations and XML based configuration, 
+		annotations configuration gets overridden byXML configurations 
+	
+	* Annotations:
+		@Required
+		@Autowired
+		@Qualifier
+		@Resource
+		@PostConstruct
+		@PreDestroy
+		
+	* Enable Annotation based configuration:	
+		We need to turn on the Annotations based configuration because it is off by default. 
+		To turn it on add<context: annotation-config/> into a spring XML file.
+		e.g.:
+		<?xml version="1.0" encoding="UTF-8"?>
+		<beans  xmlns="http://www.springframework.org/schema/beans"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns:context="http://www.springframework.org/schema/context"
+				xsi:schemaLocation="http://www.springframework.org/schema/beans
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/context
+				http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+		<context:annotation-config/>
+		</beans>
+		
+1) @Required:
+	The @Required annotation applies only to setter methods of bean properties and mandates 
+	that property must be populated at the time of dependency resolution either
+		·Using explicit property value in a bean definition or using ref attributes for the bean
+		·Using autoWiring feature.
+
+	If the value of property is not set,an exception will be raised.
+	@Required annotation is available in org.springframework.beans.factory.annotation package.
+	
+2) @Autowired:
+	@Autowired annotation is used to auto wire the properties and can be applied on
+		Setter methods
+		Constructors
+		Property
+		Any arbitrary methods
+		Multiple matching Beans
+	@Autowired annotation has one attribute “required” whose default value is true which means an exception will be thrown when a dependency is not resolved.	
+	
+@Autowire on setter methods:
+	@Autowire annotation can be added on any traditional setter method and then dependency will be resolved with “byType” auto wire mode.
+	We need not to define explicit dependency using property tag.
+	
+@Autowire on constructors:
+	@Autowire annotation can be added on constructors similar to setter methods. 
+	once done, we need not define explicit dependency using constructor-arg tags	
+
+@Autowire on property:
+	@Autowire annotation can be added on public and private properties as well. 
+	Spring uses the reflection API to inject the dependencies when added on the property and that is the reason private properties can also be annotated.
+	
+@Autowire on arbitrary method and multiple matching beans:
+	@Autowire annotation can be added on arbitrary methods and even on fields of type list or arrays so all the matching beans will be injected.	
+	
+@Autowired with Required=false:
+	@Autowired annotation has one attribute “required” whose default value is true 
+	which means an exception will be thrown when a dependency is not resolved. 
+	If we want to leave the field unset if no matching bean is found then we can add required attribute as false.
+	
+3) @Qualifier:
+	@Qualifier annotation is used to select the bean out of all beans satisfy the dependency. 
+	For instance, there are multiple student beans configured and all of the beans are candidates when used byType autowire.
+	In such scenarios we can use @Qualifier annotation with @Autowire so that a filter can be applied and only matching bean will be injected.
+	If qualifier tag is not defined in bean then bean name will be considered as qualifier.
+	
+4) @Resource:
+	@Resource annotations can be applied on property,setter methods and has attribute “name”.
+	The default value of name attribute is the property name or the setter method name.	
+	
+5) @PostConstruct and @PreDestroy:
+	Like init-method and destroy-method attributes for the bean in the Spring bean configuration file. 
+	In these attributes we can specify the name of the methods that gets executed in the life cycle of bean. 
+	Similar to these attributes we can use @PostConstruct and @PreDestroy annotations on the methods and the annotated methods gets executed accordingly.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+	
+Java Based Container Configurations:
+	Spring also supports Java based configuration where we can define an application context, bean definition as annotation.
+	
+@Configuration:
+	The @Configuration annotation applies only at a class level. 
+	Once done that class acts as a spring bean configuration file. 
+	Class annotated with @Configuration must have a default constructor.
+	e.g.:
+	@Configuration
+	public class AppConfiguration {
+		public AppConfiguration()
+		{    
+		}
+	}
+	
+@Bean:
+	@Bean annotation is applied  to a method of a class annotated with @Configuration. 
+	One method annotated with @Bean is equivalent to one bean definition in spring bean definition.	
+	e.g.:
+	@Configuration
+	public class AppConfiguration {
+		public AppConfiguration() {                               
+			}               
+		@Bean
+		public Student student() {
+			return new Student();
+		}
+	}
+	
+Dependency Injection:
+	The calling @Bean annotated bean from another @Bean annotated method can inject the beans. 
+	For example, if Hostel bean has a dependency on  Student object, then following structure can be used.
+	@Configuration
+	public class AppConfiguration {
+		Public AppConfiguration(){                              
+		}               
+		@Bean
+		public Student student(){
+			return new Student();
+		}               
+		@Bean
+		public Hostel hostel(){
+			return new Hostel(student());
+		}              
+	}
+	
+Lifecycle Callbacks:
+	we can define and configure custom initialization and destroy methods using init-method and destroy-method attributes of a bean.
+	Similarly @Bean annotation supports initMethod and destroyMethod attributes to configure the name of callback methods .
+	
+	@Configuration
+	public class AppConfiguration {
+		public AppConfiguration()
+		{                               
+		}               
+		@Bean(initMethod="init" ,destroyMethod="destroy")
+		public Student student()
+		{
+			return new Student();
+		}           
+	}
+	
+Bean name configuration:
+	We can pass the bean name of the bean in the name attribute of @Bean annotation. 
+	By default the name of the method becomes a bean name.	
+	
+	@Configuration
+	public class AppConfiguration {
+		public AppConfiguration()
+		{                               
+		}             
+		@Bean(name="studentBean")
+		public Student getStudent()
+		{
+			return new Student();
+		}               
+		@Bean
+		public Hostel hostel()
+		{
+			return new Hostel();
+		}
+	}
+	
+@Scope:
+	@Scope annotation is defined on a method and is used to configure the scope of a bean. 
+	By default scope is singleton so if any method annotated with @Bean configuration is not annotated with @Scope will be of singleton scope.
+	
+	Possible value  can be passed in @Scope annotation
+		singleton
+		prototype
+		request
+		session
+		globalSession
+	
+	e.g.:
+	@Configuration
+	public class AppConfiguration {
+		public AppConfiguration()
+		{                             
+		}                              
+		@Bean
+		@Scope("prototype")
+		public Student student()
+		{
+			return new Student();
+		}               
+		@Bean
+		public Hostel hostel()
+		{
+			return new Hostel();
+		}
+	}
+	
+AnnotationContextApplicationContext:
+	Spring provides AnnotationContextApplicationContext class which takes @Configuration annotated classes to load the class.
+
+Below code snippet will load the AppConfiguration class
+	ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+	
+	If multiple @Configuration classes need to be loaded then register and refresh methods need to be called (refer below code snippet)
+	e.g.:
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();                               
+		context.register(AppConfiguration.class);
+		context.refresh();
+		
+		
